@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Kitchen HQ</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Persistent UI -->
+  <div id="clock" class="clock"></div>
+  <button id="settings-btn" class="settings-btn" aria-label="Settings">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.32 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </button>
+
+  <!-- Swipe Container -->
+  <div id="pages" class="pages">
+    <!-- Page 1: Recipe Generator -->
+    <section id="page-recipe" class="page">
+      <div class="page-content">
+        <!-- Protein Selection: Tier 1 (Categories) -->
+        <div class="section-label">Select Protein</div>
+        <div id="protein-categories" class="card-scroll"></div>
+
+        <!-- Protein Selection: Tier 2 (Cuts) -->
+        <div id="cuts-label" class="section-label" hidden>Select Cut</div>
+        <div id="protein-cuts" class="card-scroll"></div>
+
+        <!-- Selected Proteins Summary -->
+        <div id="selected-proteins" class="selected-summary" hidden></div>
+
+        <!-- Extra Instructions -->
+        <div class="input-row">
+          <input id="extra-instructions" type="text" class="text-input" placeholder="Extra instructions... &quot;use up the leeks&quot; or &quot;under 30 min&quot;">
+          <button id="generate-btn" class="btn-primary" disabled>Generate</button>
+        </div>
+
+        <!-- Recipe Display -->
+        <div id="recipe-display" class="recipe-card" hidden>
+          <div class="recipe-header">
+            <h2 id="recipe-title" class="recipe-title"></h2>
+            <button id="fav-btn" class="fav-btn" aria-label="Save to favorites">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+          <div id="recipe-meta" class="recipe-meta"></div>
+          <div id="recipe-body" class="recipe-body"></div>
+          <div class="recipe-actions">
+            <button id="regenerate-btn" class="btn-secondary">Regenerate</button>
+          </div>
+        </div>
+
+        <!-- History / Favorites Link -->
+        <button id="history-toggle" class="link-btn" hidden>View Saved Recipes &amp; History</button>
+
+        <!-- History / Favorites View -->
+        <div id="history-view" class="history-view" hidden>
+          <div class="history-tabs">
+            <button class="history-tab active" data-tab="history">History</button>
+            <button class="history-tab" data-tab="favorites">Favorites</button>
+          </div>
+          <div id="history-list" class="history-list"></div>
+          <button id="history-back" class="link-btn">Back to Generator</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page 2: Google Calendar -->
+    <section id="page-calendar" class="page">
+      <div class="page-content">
+        <!-- Month View -->
+        <div id="calendar-month" class="calendar-month">
+          <div class="month-header">
+            <button id="month-prev" class="nav-arrow" aria-label="Previous month">&lsaquo;</button>
+            <h2 id="month-title" class="month-title"></h2>
+            <button id="month-next" class="nav-arrow" aria-label="Next month">&rsaquo;</button>
+          </div>
+          <div class="day-headers">
+            <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+          </div>
+          <div id="month-grid" class="month-grid"></div>
+        </div>
+
+        <!-- Day View -->
+        <div id="calendar-day" class="calendar-day" hidden>
+          <div class="day-header">
+            <button id="day-back" class="nav-arrow" aria-label="Back to month">&lsaquo;</button>
+            <h2 id="day-title" class="day-title"></h2>
+            <button id="add-event-btn" class="btn-icon" aria-label="Add event">+</button>
+          </div>
+          <div id="day-events" class="day-events"></div>
+        </div>
+
+        <!-- Event Editor Modal -->
+        <div id="event-modal" class="modal" hidden>
+          <div class="modal-content">
+            <h3 id="event-modal-title">New Event</h3>
+            <input id="event-title-input" type="text" class="text-input" placeholder="Event title">
+            <input id="event-date-input" type="date" class="text-input">
+            <div class="time-row">
+              <input id="event-start-input" type="time" class="text-input">
+              <span class="time-sep">to</span>
+              <input id="event-end-input" type="time" class="text-input">
+            </div>
+            <select id="event-calendar-input" class="text-input"></select>
+            <div class="modal-actions">
+              <button id="event-delete-btn" class="btn-danger" hidden>Delete</button>
+              <button id="event-cancel-btn" class="btn-secondary">Cancel</button>
+              <button id="event-save-btn" class="btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Screensaver Overlay -->
+  <div id="screensaver" class="screensaver" hidden>
+    <div id="screensaver-photo-a" class="screensaver-photo"></div>
+    <div id="screensaver-photo-b" class="screensaver-photo"></div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div id="settings-backdrop" class="settings-backdrop" hidden></div>
+  <aside id="settings-panel" class="settings-panel">
+    <h2 class="settings-title">Settings</h2>
+
+    <label class="setting-label">Claude API Key</label>
+    <input id="setting-api-key" type="password" class="text-input" placeholder="sk-ant-...">
+
+    <label class="setting-label">Base Kitchen Prompt</label>
+    <textarea id="setting-kitchen-prompt" class="text-area" rows="6"></textarea>
+
+    <label class="setting-label">Google Account</label>
+    <button id="google-auth-btn" class="btn-secondary">Connect Google Account</button>
+    <div id="google-auth-status" class="setting-status"></div>
+
+    <label class="setting-label">Google Photos Album</label>
+    <select id="setting-photos-album" class="text-input" disabled>
+      <option value="">Connect Google first</option>
+    </select>
+
+    <label class="setting-label">Screensaver Timeout</label>
+    <div class="slider-row">
+      <input id="setting-idle-timeout" type="range" min="1" max="30" value="5" class="slider">
+      <span id="idle-timeout-value" class="slider-value">5 min</span>
+    </div>
+
+    <label class="setting-label">Photo Transition Interval</label>
+    <div class="slider-row">
+      <input id="setting-photo-interval" type="range" min="1" max="30" value="5" class="slider">
+      <span id="photo-interval-value" class="slider-value">5 min</span>
+    </div>
+
+    <button id="settings-close" class="btn-secondary settings-close-btn">Close</button>
+  </aside>
+
+  <!-- Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/recipe.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/screensaver.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
