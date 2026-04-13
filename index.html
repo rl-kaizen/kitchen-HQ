@@ -137,6 +137,9 @@
     <label class="setting-label">Base Kitchen Prompt</label>
     <textarea id="setting-kitchen-prompt" class="text-area" rows="6"></textarea>
 
+    <label class="setting-label">Google Client ID</label>
+    <input id="setting-google-client-id" type="text" class="text-input" placeholder="your-client-id.apps.googleusercontent.com">
+
     <label class="setting-label">Google Account</label>
     <button id="google-auth-btn" class="btn-secondary">Connect Google Account</button>
     <div id="google-auth-status" class="setting-status"></div>
@@ -162,7 +165,9 @@
   </aside>
 
   <!-- Scripts -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="js/storage.js"></script>
+  <script src="js/google-auth.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/recipe.js"></script>
   <script src="js/calendar.js"></script>

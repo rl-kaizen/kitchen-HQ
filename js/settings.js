@@ -46,6 +46,7 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
     this.googleAuthBtn = document.getElementById('google-auth-btn');
     this.googleAuthStatus = document.getElementById('google-auth-status');
     this.photosAlbumSelect = document.getElementById('setting-photos-album');
+    this.googleClientIdInput = document.getElementById('setting-google-client-id');
 
     // Load saved values
     this.load();
@@ -66,6 +67,46 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
       this.photoIntervalValue.textContent = `${this.photoIntervalSlider.value} min`;
     });
     this.photoIntervalSlider.addEventListener('change', () => this.save());
+
+    // Google Client ID — load and save
+    this.googleClientIdInput.value = localStorage.getItem('khq-google-client-id') || '';
+    this.googleClientIdInput.addEventListener('change', () => {
+      localStorage.setItem('khq-google-client-id', this.googleClientIdInput.value.trim());
+    });
+
+    // Google Auth button
+    this.googleAuthBtn.addEventListener('click', async () => {
+      if (GoogleAuth.isAuthenticated()) {
+        GoogleAuth.disconnect();
+        this.updateGoogleAuthUI();
+      } else {
+        try {
+          await GoogleAuth.authenticate();
+          this.updateGoogleAuthUI();
+        } catch (err) {
+          this.googleAuthStatus.textContent = `Error: ${err.message}`;
+          this.googleAuthStatus.style.color = 'var(--color-danger, #e55)';
+        }
+      }
+    });
+
+    // Initialise GoogleAuth and reflect current state in the UI
+    GoogleAuth.init();
+    this.updateGoogleAuthUI();
+  },
+
+  updateGoogleAuthUI() {
+    if (GoogleAuth.isAuthenticated()) {
+      this.googleAuthBtn.textContent = 'Disconnect Google';
+      this.googleAuthStatus.textContent = 'Connected';
+      this.googleAuthStatus.style.color = 'var(--color-success, #4c4)';
+      this.photosAlbumSelect.disabled = false;
+    } else {
+      this.googleAuthBtn.textContent = 'Connect Google Account';
+      this.googleAuthStatus.textContent = 'Not connected';
+      this.googleAuthStatus.style.color = 'var(--color-muted, #999)';
+      this.photosAlbumSelect.disabled = true;
+    }
   },
 
   load() {
