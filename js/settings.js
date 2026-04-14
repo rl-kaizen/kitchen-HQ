@@ -43,14 +43,9 @@ Keep recipes practical and achievable for a home cook who has spent time in rest
     // Bind controls
     this.apiKeyInput = document.getElementById('setting-api-key');
     this.kitchenPromptInput = document.getElementById('setting-kitchen-prompt');
-    this.idleTimeoutSlider = document.getElementById('setting-idle-timeout');
-    this.idleTimeoutValue = document.getElementById('idle-timeout-value');
-    this.photoIntervalSlider = document.getElementById('setting-photo-interval');
-    this.photoIntervalValue = document.getElementById('photo-interval-value');
     this.closeBtn = document.getElementById('settings-close');
     this.googleAuthBtn = document.getElementById('google-auth-btn');
     this.googleAuthStatus = document.getElementById('google-auth-status');
-    this.photosAlbumSelect = document.getElementById('setting-photos-album');
     this.googleClientIdInput = document.getElementById('setting-google-client-id');
 
     // Load saved values
@@ -63,25 +58,10 @@ Keep recipes practical and achievable for a home cook who has spent time in rest
     this.apiKeyInput.addEventListener('change', () => this.save());
     this.kitchenPromptInput.addEventListener('change', () => this.save());
 
-    this.idleTimeoutSlider.addEventListener('input', () => {
-      this.idleTimeoutValue.textContent = `${this.idleTimeoutSlider.value} min`;
-    });
-    this.idleTimeoutSlider.addEventListener('change', () => this.save());
-
-    this.photoIntervalSlider.addEventListener('input', () => {
-      this.photoIntervalValue.textContent = `${this.photoIntervalSlider.value} min`;
-    });
-    this.photoIntervalSlider.addEventListener('change', () => this.save());
-
     // Google Client ID — load and save
     this.googleClientIdInput.value = localStorage.getItem('khq-google-client-id') || '';
     this.googleClientIdInput.addEventListener('change', () => {
       localStorage.setItem('khq-google-client-id', this.googleClientIdInput.value.trim());
-    });
-
-    // Drive folder selection
-    this.photosAlbumSelect.addEventListener('change', () => {
-      localStorage.setItem('khq-photos-folder', this.photosAlbumSelect.value);
     });
 
     // Google Auth button
@@ -111,41 +91,10 @@ Keep recipes practical and achievable for a home cook who has spent time in rest
       this.googleAuthBtn.textContent = 'Disconnect Google';
       this.googleAuthStatus.textContent = 'Connected';
       this.googleAuthStatus.style.color = 'var(--color-success, #4c4)';
-      this.photosAlbumSelect.disabled = false;
-      this.loadDriveFolders();
     } else {
       this.googleAuthBtn.textContent = 'Connect Google Account';
       this.googleAuthStatus.textContent = 'Not connected';
       this.googleAuthStatus.style.color = 'var(--color-muted, #999)';
-      this.photosAlbumSelect.disabled = true;
-      this.photosAlbumSelect.innerHTML = '<option value="">Connect Google first</option>';
-    }
-  },
-
-  async loadDriveFolders() {
-    if (!GoogleAuth.isAuthenticated()) return;
-    try {
-      // Fetch owned folders from root + shared folders
-      const ownQuery = "mimeType = 'application/vnd.google-apps.folder' and 'root' in parents and trashed = false";
-      const sharedQuery = "mimeType = 'application/vnd.google-apps.folder' and sharedWithMe = true and trashed = false";
-      const [ownData, sharedData] = await Promise.all([
-        GoogleAuth.fetchJSON(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(ownQuery)}&fields=files(id,name)&orderBy=name&pageSize=100`),
-        GoogleAuth.fetchJSON(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(sharedQuery)}&fields=files(id,name)&orderBy=name&pageSize=100`),
-      ]);
-      const saved = localStorage.getItem('khq-photos-folder') || '';
-      const ownFolders = (ownData.files || []).map(f => ({ ...f, shared: false }));
-      const sharedFolders = (sharedData.files || []).map(f => ({ ...f, shared: true }));
-      const allFolders = [...ownFolders, ...sharedFolders];
-      this.photosAlbumSelect.innerHTML = '<option value="">Select folder...</option>' +
-        allFolders.map(f =>
-          `<option value="${f.id}" ${f.id === saved ? 'selected' : ''}>${f.name}${f.shared ? ' (shared)' : ''}</option>`
-        ).join('');
-      this.photosAlbumSelect.disabled = false;
-    } catch (err) {
-      console.error('Failed to load Drive folders:', err);
-      if (!GoogleAuth.isAuthenticated()) {
-        this.updateGoogleAuthUI();
-      }
     }
   },
 
@@ -153,20 +102,11 @@ Keep recipes practical and achievable for a home cook who has spent time in rest
     this.apiKeyInput.value = localStorage.getItem('khq-api-key') || '';
     this.kitchenPromptInput.value = localStorage.getItem('khq-kitchen-prompt') || this.DEFAULT_KITCHEN_PROMPT;
 
-    const idleTimeout = localStorage.getItem('khq-idle-timeout') || '5';
-    this.idleTimeoutSlider.value = idleTimeout;
-    this.idleTimeoutValue.textContent = `${idleTimeout} min`;
-
-    const photoInterval = localStorage.getItem('khq-photo-interval') || '5';
-    this.photoIntervalSlider.value = photoInterval;
-    this.photoIntervalValue.textContent = `${photoInterval} min`;
   },
 
   save() {
     localStorage.setItem('khq-api-key', this.apiKeyInput.value);
     localStorage.setItem('khq-kitchen-prompt', this.kitchenPromptInput.value);
-    localStorage.setItem('khq-idle-timeout', this.idleTimeoutSlider.value);
-    localStorage.setItem('khq-photo-interval', this.photoIntervalSlider.value);
   },
 
   getApiKey() {

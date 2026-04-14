@@ -6,7 +6,6 @@ const App = {
   touchStartY: 0,
   touchDeltaX: 0,
   isSwiping: false,
-  idleTimer: null,
   clockInterval: null,
 
   init() {
@@ -19,7 +18,6 @@ const App = {
     this.setupSwipe();
     this.setupKeyboard();
     this.setupClock();
-    this.setupIdleDetection();
 
     // Init sub-modules
     Settings.init();
@@ -27,7 +25,6 @@ const App = {
       Recipe.init();
     });
     Calendar.init();
-    Screensaver.init();
 
     this.settingsBtn.addEventListener('click', () => Settings.open());
 
@@ -190,21 +187,6 @@ const App = {
     this.clockEl.textContent = `${hours}:${mins} ${ampm}`;
   },
 
-  // --- Idle Detection ---
-  setupIdleDetection() {
-    const events = ['touchstart', 'touchmove', 'click', 'keydown'];
-    const resetIdle = () => this.resetIdleTimer();
-    events.forEach(evt => document.addEventListener(evt, resetIdle, { passive: true }));
-    this.resetIdleTimer();
-  },
-
-  resetIdleTimer() {
-    clearTimeout(this.idleTimer);
-    const timeoutMin = parseInt(localStorage.getItem('khq-idle-timeout') || '5', 10);
-    this.idleTimer = setTimeout(() => {
-      Screensaver.activate();
-    }, timeoutMin * 60 * 1000);
-  }
 };
 
 // Boot

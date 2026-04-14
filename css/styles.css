@@ -141,10 +141,6 @@ html, body {
   color: var(--text-primary);
 }
 
-.screensaver-active .settings-btn {
-  display: none;
-}
-
 /* === Pages (Swipe Container) === */
 .pages {
   display: flex;
@@ -894,44 +890,6 @@ html, body {
 .settings-close-btn {
   margin-top: var(--space-xl);
   width: 100%;
-}
-
-/* === Screensaver === */
-.screensaver {
-  position: fixed;
-  inset: 0;
-  z-index: 250;
-  background: #000;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-}
-
-.screensaver.active {
-  opacity: 1;
-}
-
-.screensaver-photo {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 2s ease;
-  will-change: opacity, transform;
-}
-
-.screensaver-photo.visible {
-  opacity: 1;
-}
-
-/* Ken Burns subtle zoom */
-@keyframes ken-burns {
-  from { transform: scale(1); }
-  to   { transform: scale(1.08); }
-}
-
-.screensaver-photo.ken-burns {
-  animation: ken-burns 30s ease-in-out alternate;
 }
 
 /* === Utility === */

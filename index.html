@@ -145,12 +145,6 @@
     </section>
   </div>
 
-  <!-- Screensaver Overlay -->
-  <div id="screensaver" class="screensaver" hidden>
-    <div id="screensaver-photo-a" class="screensaver-photo"></div>
-    <div id="screensaver-photo-b" class="screensaver-photo"></div>
-  </div>
-
   <!-- Settings Panel -->
   <div id="settings-backdrop" class="settings-backdrop" hidden></div>
   <aside id="settings-panel" class="settings-panel">
@@ -169,23 +163,6 @@
     <button id="google-auth-btn" class="btn-secondary">Connect Google Account</button>
     <div id="google-auth-status" class="setting-status"></div>
 
-    <label class="setting-label">Google Drive Photos Folder</label>
-    <select id="setting-photos-album" class="text-input" disabled>
-      <option value="">Connect Google first</option>
-    </select>
-
-    <label class="setting-label">Screensaver Timeout</label>
-    <div class="slider-row">
-      <input id="setting-idle-timeout" type="range" min="1" max="30" value="5" class="slider">
-      <span id="idle-timeout-value" class="slider-value">5 min</span>
-    </div>
-
-    <label class="setting-label">Photo Transition Interval</label>
-    <div class="slider-row">
-      <input id="setting-photo-interval" type="range" min="1" max="30" value="5" class="slider">
-      <span id="photo-interval-value" class="slider-value">5 min</span>
-    </div>
-
     <button id="settings-close" class="btn-secondary settings-close-btn">Close</button>
   </aside>
 
@@ -196,7 +173,6 @@
   <script src="js/settings.js"></script>
   <script src="js/recipe.js"></script>
   <script src="js/calendar.js"></script>
-  <script src="js/screensaver.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

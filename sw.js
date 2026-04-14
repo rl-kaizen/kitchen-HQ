@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitchen-hq-v14';
+const CACHE_NAME = 'kitchen-hq-v15';
 const BASE_PATH = '/kitchen-HQ';
 const STATIC_ASSETS = [
   `${BASE_PATH}/`,
@@ -10,7 +10,6 @@ const STATIC_ASSETS = [
   `${BASE_PATH}/js/settings.js`,
   `${BASE_PATH}/js/recipe.js`,
   `${BASE_PATH}/js/calendar.js`,
-  `${BASE_PATH}/js/screensaver.js`,
   `${BASE_PATH}/js/google-auth.js`,
   `${BASE_PATH}/assets/icons/icon-192.png`,
   `${BASE_PATH}/assets/icons/icon-512.png`,
