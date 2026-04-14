@@ -74,6 +74,11 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
       localStorage.setItem('khq-google-client-id', this.googleClientIdInput.value.trim());
     });
 
+    // Photos album selection
+    this.photosAlbumSelect.addEventListener('change', () => {
+      localStorage.setItem('khq-photos-album', this.photosAlbumSelect.value);
+    });
+
     // Google Auth button
     this.googleAuthBtn.addEventListener('click', async () => {
       if (GoogleAuth.isAuthenticated()) {
@@ -101,11 +106,27 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
       this.googleAuthStatus.textContent = 'Connected';
       this.googleAuthStatus.style.color = 'var(--color-success, #4c4)';
       this.photosAlbumSelect.disabled = false;
+      this.loadPhotoAlbums();
     } else {
       this.googleAuthBtn.textContent = 'Connect Google Account';
       this.googleAuthStatus.textContent = 'Not connected';
       this.googleAuthStatus.style.color = 'var(--color-muted, #999)';
       this.photosAlbumSelect.disabled = true;
+    }
+  },
+
+  async loadPhotoAlbums() {
+    if (!GoogleAuth.isAuthenticated()) return;
+    try {
+      const data = await GoogleAuth.fetchJSON('https://photoslibrary.googleapis.com/v1/albums?pageSize=50');
+      const saved = localStorage.getItem('khq-photos-album') || '';
+      this.photosAlbumSelect.innerHTML = '<option value="">Select album...</option>' +
+        (data.albums || []).map(a =>
+          `<option value="${a.title}" ${a.title === saved ? 'selected' : ''}>${a.title}</option>`
+        ).join('');
+      this.photosAlbumSelect.disabled = false;
+    } catch (err) {
+      console.error('Failed to load albums:', err);
     }
   },
 
