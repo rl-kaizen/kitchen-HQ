@@ -1,18 +1,19 @@
 const CACHE_NAME = 'kitchen-hq-v1';
+const BASE_PATH = '/kitchen-HQ';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/css/styles.css',
-  '/js/app.js',
-  '/js/storage.js',
-  '/js/settings.js',
-  '/js/recipe.js',
-  '/js/calendar.js',
-  '/js/screensaver.js',
-  '/js/google-auth.js',
-  '/assets/icons/icon-192.png',
-  '/assets/icons/icon-512.png'
+  `${BASE_PATH}/`,
+  `${BASE_PATH}/index.html`,
+  `${BASE_PATH}/manifest.json`,
+  `${BASE_PATH}/css/styles.css`,
+  `${BASE_PATH}/js/app.js`,
+  `${BASE_PATH}/js/storage.js`,
+  `${BASE_PATH}/js/settings.js`,
+  `${BASE_PATH}/js/recipe.js`,
+  `${BASE_PATH}/js/calendar.js`,
+  `${BASE_PATH}/js/screensaver.js`,
+  `${BASE_PATH}/js/google-auth.js`,
+  `${BASE_PATH}/assets/icons/icon-192.png`,
+  `${BASE_PATH}/assets/icons/icon-512.png`
 ];
 
 // Install: cache static assets

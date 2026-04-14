@@ -2,7 +2,7 @@
   "name": "Kitchen HQ",
   "short_name": "Kitchen HQ",
   "description": "Touch-optimized kitchen productivity app",
-  "start_url": "/",
+  "start_url": "/kitchen-HQ/",
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#0a0a1a",
