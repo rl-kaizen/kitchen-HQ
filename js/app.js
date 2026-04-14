@@ -10,17 +10,12 @@ const App = {
   clockInterval: null,
 
   init() {
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/kitchen-HQ/sw.js').catch(err => {
-        console.warn('SW registration failed:', err);
-      });
-    }
-
     this.pages = document.getElementById('pages');
     this.clockEl = document.getElementById('clock');
     this.settingsBtn = document.getElementById('settings-btn');
 
+    this.setupServiceWorker();
+    this.setupOfflineIndicator();
     this.setupSwipe();
     this.setupKeyboard();
     this.setupClock();
@@ -48,6 +43,56 @@ const App = {
         console.error('Reconnect failed:', err);
       }
     });
+
+    // Update banner refresh
+    document.getElementById('update-banner-refresh').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg && reg.waiting) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      } else {
+        window.location.reload();
+      }
+    });
+  },
+
+  setupServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+
+    // Reload cleanly when a new SW takes control
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
+
+    navigator.serviceWorker.register('/kitchen-HQ/sw.js').then(reg => {
+      // A new SW is already waiting (e.g. user refreshed after update was detected)
+      if (reg.waiting) {
+        document.getElementById('update-banner').hidden = false;
+      }
+
+      // A new SW starts installing after the page loads
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            document.getElementById('update-banner').hidden = false;
+          }
+        });
+      });
+    }).catch(err => {
+      console.warn('SW registration failed:', err);
+    });
+  },
+
+  setupOfflineIndicator() {
+    const banner = document.getElementById('offline-banner');
+    const update = () => { banner.hidden = navigator.onLine; };
+    window.addEventListener('online', update);
+    window.addEventListener('offline', update);
+    update(); // Set initial state
   },
 
   showAuthBanner() {

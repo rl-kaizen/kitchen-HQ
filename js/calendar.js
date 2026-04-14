@@ -32,6 +32,8 @@ const Calendar = {
     this.eventStartInput = document.getElementById('event-start-input');
     this.eventEndInput = document.getElementById('event-end-input');
     this.eventCalendarInput = document.getElementById('event-calendar-input');
+    this.eventAlldayInput = document.getElementById('event-allday-input');
+    this.eventTimeRow = document.getElementById('event-time-row');
     this.eventDeleteBtn = document.getElementById('event-delete-btn');
     this.eventCancelBtn = document.getElementById('event-cancel-btn');
     this.eventSaveBtn = document.getElementById('event-save-btn');
@@ -60,6 +62,9 @@ const Calendar = {
     this.nextBtn.addEventListener('click', () => this.changeMonth(1));
     this.dayBackBtn.addEventListener('click', () => this.showMonthView());
     this.addEventBtn.addEventListener('click', () => this.openNewEvent());
+    this.eventAlldayInput.addEventListener('change', () => {
+      this.eventTimeRow.hidden = this.eventAlldayInput.checked;
+    });
     this.eventCancelBtn.addEventListener('click', () => this.closeModal());
     this.eventSaveBtn.addEventListener('click', () => this.saveEvent());
     this.eventDeleteBtn.addEventListener('click', () => this.deleteEvent());
@@ -224,6 +229,8 @@ const Calendar = {
     this.eventDateInput.value = this.toDateString(this.selectedDay || new Date());
     this.eventStartInput.value = '09:00';
     this.eventEndInput.value = '10:00';
+    this.eventAlldayInput.checked = false;
+    this.eventTimeRow.hidden = false;
     this.eventDeleteBtn.hidden = true;
     this.eventModal.hidden = false;
     this.loadCalendarList();
@@ -231,11 +238,14 @@ const Calendar = {
 
   openEditEvent(event) {
     this.editingEvent = event;
+    const isAllDay = !event.start.dateTime;
     this.eventModalTitle.textContent = 'Edit Event';
     this.eventTitleInput.value = event.summary || '';
-    this.eventDateInput.value = event.start.dateTime ? event.start.dateTime.slice(0, 10) : event.start.date;
-    this.eventStartInput.value = event.start.dateTime ? event.start.dateTime.slice(11, 16) : '';
-    this.eventEndInput.value = event.end.dateTime ? event.end.dateTime.slice(11, 16) : '';
+    this.eventDateInput.value = isAllDay ? event.start.date : event.start.dateTime.slice(0, 10);
+    this.eventStartInput.value = isAllDay ? '' : event.start.dateTime.slice(11, 16);
+    this.eventEndInput.value = isAllDay ? '' : event.end.dateTime.slice(11, 16);
+    this.eventAlldayInput.checked = isAllDay;
+    this.eventTimeRow.hidden = isAllDay;
     this.eventDeleteBtn.hidden = false;
     this.eventModal.hidden = false;
     this.loadCalendarList();
@@ -268,17 +278,31 @@ const Calendar = {
   async saveEvent() {
     const calendarId = this.eventCalendarInput.value || 'primary';
     const date = this.eventDateInput.value;
-    const body = {
-      summary: this.eventTitleInput.value,
-      start: {
-        dateTime: `${date}T${this.eventStartInput.value}:00`,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-      },
-      end: {
-        dateTime: `${date}T${this.eventEndInput.value}:00`,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-      }
-    };
+    const isAllDay = this.eventAlldayInput.checked;
+
+    let body;
+    if (isAllDay) {
+      // All-day events use date-only strings; end is exclusive (next day)
+      const endDate = new Date(date + 'T00:00:00');
+      endDate.setDate(endDate.getDate() + 1);
+      body = {
+        summary: this.eventTitleInput.value,
+        start: { date },
+        end: { date: this.toDateString(endDate) }
+      };
+    } else {
+      body = {
+        summary: this.eventTitleInput.value,
+        start: {
+          dateTime: `${date}T${this.eventStartInput.value}:00`,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        },
+        end: {
+          dateTime: `${date}T${this.eventEndInput.value}:00`,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        }
+      };
+    }
 
     try {
       if (this.editingEvent) {

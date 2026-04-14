@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitchen-hq-v13';
+const CACHE_NAME = 'kitchen-hq-v14';
 const BASE_PATH = '/kitchen-HQ';
 const STATIC_ASSETS = [
   `${BASE_PATH}/`,
@@ -20,10 +20,15 @@ const STATIC_ASSETS = [
 // Install: cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(STATIC_ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
   );
+});
+
+// Allow pages to trigger a skip-waiting on demand (for update banners)
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Activate: clean old caches
