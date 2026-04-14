@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitchen-hq-v6';
+const CACHE_NAME = 'kitchen-hq-v7';
 const BASE_PATH = '/kitchen-HQ';
 const STATIC_ASSETS = [
   `${BASE_PATH}/`,
