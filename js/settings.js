@@ -74,9 +74,9 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
       localStorage.setItem('khq-google-client-id', this.googleClientIdInput.value.trim());
     });
 
-    // Photos album selection
+    // Drive folder selection
     this.photosAlbumSelect.addEventListener('change', () => {
-      localStorage.setItem('khq-photos-album', this.photosAlbumSelect.value);
+      localStorage.setItem('khq-photos-folder', this.photosAlbumSelect.value);
     });
 
     // Google Auth button
@@ -107,7 +107,7 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
       this.googleAuthStatus.textContent = 'Connected';
       this.googleAuthStatus.style.color = 'var(--color-success, #4c4)';
       this.photosAlbumSelect.disabled = false;
-      this.loadPhotoAlbums();
+      this.loadDriveFolders();
     } else {
       this.googleAuthBtn.textContent = 'Connect Google Account';
       this.googleAuthStatus.textContent = 'Not connected';
@@ -117,19 +117,21 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
     }
   },
 
-  async loadPhotoAlbums() {
+  async loadDriveFolders() {
     if (!GoogleAuth.isAuthenticated()) return;
     try {
-      const data = await GoogleAuth.fetchJSON('https://photoslibrary.googleapis.com/v1/albums?pageSize=50');
-      const saved = localStorage.getItem('khq-photos-album') || '';
-      this.photosAlbumSelect.innerHTML = '<option value="">Select album...</option>' +
-        (data.albums || []).map(a =>
-          `<option value="${a.title}" ${a.title === saved ? 'selected' : ''}>${a.title}</option>`
+      // Fetch folders from Drive root that the user owns
+      const query = "mimeType = 'application/vnd.google-apps.folder' and 'root' in parents and trashed = false";
+      const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)&orderBy=name&pageSize=100`;
+      const data = await GoogleAuth.fetchJSON(url);
+      const saved = localStorage.getItem('khq-photos-folder') || '';
+      this.photosAlbumSelect.innerHTML = '<option value="">Select folder...</option>' +
+        (data.files || []).map(f =>
+          `<option value="${f.id}" ${f.id === saved ? 'selected' : ''}>${f.name}</option>`
         ).join('');
       this.photosAlbumSelect.disabled = false;
     } catch (err) {
-      console.error('Failed to load albums:', err);
-      // If we got a scope/auth error, the token was cleared — update UI
+      console.error('Failed to load Drive folders:', err);
       if (!GoogleAuth.isAuthenticated()) {
         this.updateGoogleAuthUI();
       }

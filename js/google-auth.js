@@ -1,6 +1,6 @@
 // Kitchen HQ — Google OAuth via Identity Services
 const GoogleAuth = {
-  SCOPES: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/photoslibrary.readonly',
+  SCOPES: 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive.readonly',
 
   tokenClient: null,
   accessToken: null,

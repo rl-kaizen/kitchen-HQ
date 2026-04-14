@@ -1,10 +1,9 @@
-// Kitchen HQ — Photo Screensaver
+// Kitchen HQ — Photo Screensaver (Google Drive)
 const Screensaver = {
   photos: [],
   currentIndex: 0,
   activeSlot: 'a', // alternates between 'a' and 'b' for crossfade
   cycleTimer: null,
-  refreshTimer: null,
   isActive: false,
 
   init() {
@@ -32,6 +31,7 @@ const Screensaver = {
 
     // Show first photo immediately
     this.currentIndex = 0;
+    this.shufflePhotos();
     this.showPhoto(this.photos[0]);
 
     // Fade in
@@ -42,9 +42,6 @@ const Screensaver = {
     // Start cycling
     const intervalMin = parseInt(localStorage.getItem('khq-photo-interval') || '5', 10);
     this.cycleTimer = setInterval(() => this.nextPhoto(), intervalMin * 60 * 1000);
-
-    // Refresh URLs every 45 minutes (they expire after ~60 min)
-    this.refreshTimer = setInterval(() => this.fetchPhotos(), 45 * 60 * 1000);
   },
 
   deactivate() {
@@ -64,9 +61,7 @@ const Screensaver = {
     }, 1500);
 
     clearInterval(this.cycleTimer);
-    clearInterval(this.refreshTimer);
     this.cycleTimer = null;
-    this.refreshTimer = null;
 
     // Reset idle timer
     App.resetIdleTimer();
@@ -76,8 +71,8 @@ const Screensaver = {
     const slot = this.activeSlot === 'a' ? this.photoA : this.photoB;
     const otherSlot = this.activeSlot === 'a' ? this.photoB : this.photoA;
 
-    // Set new photo with sizing params
-    const url = `${photo.baseUrl}=w2048-h1536`;
+    // Google Drive thumbnail URL — use large size for high-res display
+    const url = `https://drive.google.com/thumbnail?id=${photo.id}&sz=w2048`;
     slot.style.backgroundImage = `url(${url})`;
 
     // Ken Burns: randomize direction
@@ -105,51 +100,26 @@ const Screensaver = {
     return positions[Math.floor(Math.random() * positions.length)];
   },
 
-  // --- Google Photos Integration ---
+  // --- Google Drive Integration ---
   async fetchPhotos() {
     if (!GoogleAuth.isAuthenticated()) return;
 
-    const albumName = localStorage.getItem('khq-photos-album') || '';
-    if (!albumName) return;
+    const folderId = localStorage.getItem('khq-photos-folder') || '';
+    if (!folderId) return;
 
     try {
-      // Find the album
-      const albums = await GoogleAuth.fetchJSON('https://photoslibrary.googleapis.com/v1/albums?pageSize=50');
-      const album = albums.albums?.find(a => a.title === albumName);
-      if (!album) {
-        console.warn(`Album "${albumName}" not found`);
-        return;
-      }
+      // Fetch image files from the selected Drive folder
+      const query = `'${folderId}' in parents and mimeType contains 'image/' and trashed = false`;
+      const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name,mimeType)&pageSize=200`;
+      const data = await GoogleAuth.fetchJSON(url);
 
-      // Fetch media items from the album
-      const token = await GoogleAuth.getToken();
-      const response = await fetch('https://photoslibrary.googleapis.com/v1/mediaItems:search', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          albumId: album.id,
-          pageSize: 100
-        })
-      });
-
-      if (!response.ok) throw new Error(`Photos API error: ${response.status}`);
-      const data = await response.json();
-
-      if (data.mediaItems) {
-        // Only include photos (not videos)
-        this.photos = data.mediaItems.filter(item =>
-          item.mimeType && item.mimeType.startsWith('image/')
-        );
+      if (data.files && data.files.length > 0) {
+        this.photos = data.files;
         this.cachePhotos();
-
-        // Shuffle for variety
         this.shufflePhotos();
       }
     } catch (err) {
-      console.error('Failed to fetch photos:', err);
+      console.error('Failed to fetch photos from Drive:', err);
     }
   },
 
@@ -162,8 +132,7 @@ const Screensaver = {
 
   cachePhotos() {
     try {
-      // Only cache baseUrls and IDs (URLs expire, but useful for initial render)
-      const minimal = this.photos.map(p => ({ id: p.id, baseUrl: p.baseUrl, mimeType: p.mimeType }));
+      const minimal = this.photos.map(p => ({ id: p.id, name: p.name, mimeType: p.mimeType }));
       localStorage.setItem('khq-photos-cache', JSON.stringify(minimal));
     } catch (e) {
       // Ignore storage errors
