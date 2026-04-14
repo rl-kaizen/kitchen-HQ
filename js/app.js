@@ -54,34 +54,13 @@ const App = {
   },
 
   setupServiceWorker() {
-    if (!('serviceWorker' in navigator)) return;
-
-    // Reload cleanly when a new SW takes control
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshing) return;
-      refreshing = true;
-      window.location.reload();
-    });
-
-    navigator.serviceWorker.register('/kitchen-HQ/sw.js').then(reg => {
-      // A new SW is already waiting (e.g. user refreshed after update was detected)
-      if (reg.waiting) {
-        document.getElementById('update-banner').hidden = false;
-      }
-
-      // A new SW starts installing after the page loads
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            document.getElementById('update-banner').hidden = false;
-          }
-        });
+    // DEV MODE: service worker disabled for fast iteration — re-enable before shipping
+    // Unregister any previously installed SW so the browser fetches fresh on every load
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
       });
-    }).catch(err => {
-      console.warn('SW registration failed:', err);
-    });
+    }
   },
 
   setupOfflineIndicator() {
