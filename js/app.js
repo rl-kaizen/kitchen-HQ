@@ -22,6 +22,7 @@ const App = {
     this.settingsBtn = document.getElementById('settings-btn');
 
     this.setupSwipe();
+    this.setupKeyboard();
     this.setupClock();
     this.setupIdleDetection();
 
@@ -98,6 +99,14 @@ const App = {
       this.currentPage = index;
       this.snapToPage();
     }
+  },
+
+  // --- Keyboard Navigation ---
+  setupKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') this.goToPage(this.currentPage + 1);
+      else if (e.key === 'ArrowLeft') this.goToPage(this.currentPage - 1);
+    });
   },
 
   // --- Clock ---
