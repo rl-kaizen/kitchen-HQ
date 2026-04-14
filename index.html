@@ -118,31 +118,32 @@
           </div>
         </div>
 
-        <!-- Event Editor Modal -->
-        <div id="event-modal" class="modal" hidden>
-          <div class="modal-content">
-            <h3 id="event-modal-title">New Event</h3>
-            <input id="event-title-input" type="text" class="text-input" placeholder="Event title">
-            <input id="event-date-input" type="date" class="text-input">
-            <label class="allday-row">
-              <input type="checkbox" id="event-allday-input">
-              <span>All day</span>
-            </label>
-            <div class="time-row" id="event-time-row">
-              <input id="event-start-input" type="time" class="text-input">
-              <span class="time-sep">to</span>
-              <input id="event-end-input" type="time" class="text-input">
-            </div>
-            <select id="event-calendar-input" class="text-input"></select>
-            <div class="modal-actions">
-              <button id="event-delete-btn" class="btn-danger" hidden>Delete</button>
-              <button id="event-cancel-btn" class="btn-secondary">Cancel</button>
-              <button id="event-save-btn" class="btn-primary">Save</button>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
+  </div>
+
+  <!-- Event Editor Modal (outside #pages to avoid transform interference) -->
+  <div id="event-modal" class="modal" hidden>
+    <div class="modal-content">
+      <h3 id="event-modal-title">New Event</h3>
+      <input id="event-title-input" type="text" class="text-input" placeholder="Event title">
+      <input id="event-date-input" type="date" class="text-input">
+      <label class="allday-row">
+        <input type="checkbox" id="event-allday-input">
+        <span>All day</span>
+      </label>
+      <div class="time-row" id="event-time-row">
+        <input id="event-start-input" type="time" class="text-input">
+        <span class="time-sep">to</span>
+        <input id="event-end-input" type="time" class="text-input">
+      </div>
+      <select id="event-calendar-input" class="text-input"></select>
+      <div class="modal-actions">
+        <button id="event-delete-btn" class="btn-danger" hidden>Delete</button>
+        <button id="event-cancel-btn" class="btn-secondary">Cancel</button>
+        <button id="event-save-btn" class="btn-primary">Save</button>
+      </div>
+    </div>
   </div>
 
   <!-- Settings Panel -->
