@@ -289,6 +289,7 @@ const Recipe = {
     this.isGenerating = true;
     this.updateGenerateButton();
     this.generateBtn.textContent = 'Generating...';
+    this.recipeDisplay.hidden = true;
 
     const proteinList = this.selectedCuts.map(c => `${c.category} ${c.label}`).join(', ');
     const extraInstructions = this.extraInput.value.trim();
@@ -399,9 +400,6 @@ const Recipe = {
       this.recipeMetaEl.textContent = proteinList;
     }
 
-    // Debug: log raw markdown to diagnose list rendering
-    console.log('[Recipe] Raw markdown from Claude:', JSON.stringify(markdown));
-
     // Convert remaining markdown to HTML (simple conversion)
     let body = markdown;
     // Strip any raw HTML tags to prevent XSS from API responses
@@ -421,8 +419,8 @@ const Recipe = {
     let inUl = false;
     let inOl = false;
 
-    for (const line of lines) {
-      const trimmed = line.trim();
+    for (let i = 0; i < lines.length; i++) {
+      const trimmed = lines[i].trim();
       const ulMatch = trimmed.match(/^-\s+(.+)/);
       const olMatch = trimmed.match(/^\d+\.\s+(.+)/);
 
@@ -432,14 +430,24 @@ const Recipe = {
       } else if (olMatch) {
         if (!inOl) { if (inUl) { html += '</ul>'; inUl = false; } html += '<ol>'; inOl = true; }
         html += `<li>${olMatch[1]}</li>`;
+      } else if (trimmed === '') {
+        // Blank line — peek ahead to see if the next non-blank line continues the same list
+        let nextListLine = false;
+        for (let j = i + 1; j < lines.length; j++) {
+          const next = lines[j].trim();
+          if (next === '') continue;
+          if (inUl && next.match(/^-\s+/)) nextListLine = true;
+          if (inOl && next.match(/^\d+\.\s+/)) nextListLine = true;
+          break;
+        }
+        if (!nextListLine) {
+          if (inUl) { html += '</ul>'; inUl = false; }
+          if (inOl) { html += '</ol>'; inOl = false; }
+        }
       } else {
         if (inUl) { html += '</ul>'; inUl = false; }
         if (inOl) { html += '</ol>'; inOl = false; }
-        if (trimmed === '') {
-          html += ' ';
-        } else {
-          html += `<p>${trimmed}</p>`;
-        }
+        html += `<p>${trimmed}</p>`;
       }
     }
     if (inUl) html += '</ul>';
