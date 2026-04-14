@@ -121,6 +121,13 @@ html, body {
   margin: 0 auto;
 }
 
+/* Calendar page uses full width */
+#page-calendar .page-content {
+  max-width: 100%;
+  padding-left: var(--space-2xl);
+  padding-right: var(--space-2xl);
+}
+
 /* === Section Labels === */
 .section-label {
   font-size: 12px;
@@ -254,6 +261,7 @@ html, body {
   padding: var(--space-md);
   outline: none;
   resize: vertical;
+  min-height: 120px;
   transition: border-color var(--transition-fast);
 }
 

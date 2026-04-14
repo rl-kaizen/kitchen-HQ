@@ -6,86 +6,86 @@ const Recipe = {
       emoji: '\u{1F414}',
       label: 'Chicken',
       cuts: [
-        { id: 'chicken-thighs-bone-in', label: 'Thighs\n(bone-in)' },
-        { id: 'chicken-thighs-boneless', label: 'Thighs\n(boneless)' },
-        { id: 'chicken-breasts', label: 'Breasts' },
-        { id: 'chicken-whole', label: 'Whole\nChicken' },
-        { id: 'chicken-wings', label: 'Wings' },
-        { id: 'chicken-drumsticks', label: 'Drumsticks' },
-        { id: 'chicken-ground', label: 'Ground\nChicken' },
+        { id: 'chicken-thighs-bone-in', label: 'Bone-in\nThighs', emoji: '\u{1F357}' },
+        { id: 'chicken-thighs-boneless', label: 'Boneless\nThighs', emoji: '\u{1F969}' },
+        { id: 'chicken-breasts', label: 'Breasts', emoji: '\u{1F953}' },
+        { id: 'chicken-whole', label: 'Whole\nChicken', emoji: '\u{1F414}' },
+        { id: 'chicken-wings', label: 'Wings', emoji: '\u{1F357}' },
+        { id: 'chicken-drumsticks', label: 'Drumsticks', emoji: '\u{1F356}' },
+        { id: 'chicken-ground', label: 'Ground\nChicken', emoji: '\u{1F35D}' },
       ]
     },
     beef: {
       emoji: '\u{1F969}',
       label: 'Beef',
       cuts: [
-        { id: 'beef-ribeye', label: 'Ribeye' },
-        { id: 'beef-ny-strip', label: 'NY Strip' },
-        { id: 'beef-filet', label: 'Filet' },
-        { id: 'beef-flank', label: 'Flank' },
-        { id: 'beef-stew-meat', label: 'Stew Meat' },
-        { id: 'beef-ground', label: 'Ground Beef' },
-        { id: 'beef-short-ribs', label: 'Short Ribs' },
-        { id: 'beef-brisket', label: 'Brisket' },
+        { id: 'beef-ribeye', label: 'Ribeye', emoji: '\u{1F969}' },
+        { id: 'beef-ny-strip', label: 'NY Strip', emoji: '\u{1F969}' },
+        { id: 'beef-filet', label: 'Filet', emoji: '\u{1F944}' },
+        { id: 'beef-flank', label: 'Flank', emoji: '\u{1FAD4}' },
+        { id: 'beef-stew-meat', label: 'Stew Meat', emoji: '\u{1F372}' },
+        { id: 'beef-ground', label: 'Ground Beef', emoji: '\u{1F354}' },
+        { id: 'beef-short-ribs', label: 'Short Ribs', emoji: '\u{1F356}' },
+        { id: 'beef-brisket', label: 'Brisket', emoji: '\u{1F525}' },
       ]
     },
     pork: {
       emoji: '\u{1F416}',
       label: 'Pork',
       cuts: [
-        { id: 'pork-chops', label: 'Chops' },
-        { id: 'pork-tenderloin', label: 'Tenderloin' },
-        { id: 'pork-shoulder', label: 'Shoulder' },
-        { id: 'pork-ribs', label: 'Ribs' },
-        { id: 'pork-ground', label: 'Ground Pork' },
-        { id: 'pork-belly', label: 'Belly' },
-        { id: 'pork-sausage', label: 'Sausage' },
+        { id: 'pork-chops', label: 'Chops', emoji: '\u{1F969}' },
+        { id: 'pork-tenderloin', label: 'Tenderloin', emoji: '\u{1F944}' },
+        { id: 'pork-shoulder', label: 'Shoulder', emoji: '\u{1F356}' },
+        { id: 'pork-ribs', label: 'Ribs', emoji: '\u{1F356}' },
+        { id: 'pork-ground', label: 'Ground Pork', emoji: '\u{1F354}' },
+        { id: 'pork-belly', label: 'Belly', emoji: '\u{1F953}' },
+        { id: 'pork-sausage', label: 'Sausage', emoji: '\u{1F32D}' },
       ]
     },
     seafood: {
       emoji: '\u{1F41F}',
       label: 'Seafood',
       cuts: [
-        { id: 'seafood-salmon', label: 'Salmon' },
-        { id: 'seafood-shrimp', label: 'Shrimp' },
-        { id: 'seafood-tuna', label: 'Tuna' },
-        { id: 'seafood-cod', label: 'Cod' },
-        { id: 'seafood-scallops', label: 'Scallops' },
-        { id: 'seafood-mussels', label: 'Mussels' },
-        { id: 'seafood-crab', label: 'Crab' },
+        { id: 'seafood-salmon', label: 'Salmon', emoji: '\u{1F3A3}' },
+        { id: 'seafood-shrimp', label: 'Shrimp', emoji: '\u{1F990}' },
+        { id: 'seafood-tuna', label: 'Tuna', emoji: '\u{1F41F}' },
+        { id: 'seafood-cod', label: 'Cod', emoji: '\u{1F420}' },
+        { id: 'seafood-scallops', label: 'Scallops', emoji: '\u{1F41A}' },
+        { id: 'seafood-mussels', label: 'Mussels', emoji: '\u{1F9AA}' },
+        { id: 'seafood-crab', label: 'Crab', emoji: '\u{1F980}' },
       ]
     },
     lamb: {
       emoji: '\u{1F411}',
       label: 'Lamb',
       cuts: [
-        { id: 'lamb-chops', label: 'Chops' },
-        { id: 'lamb-leg', label: 'Leg' },
-        { id: 'lamb-shoulder', label: 'Shoulder' },
-        { id: 'lamb-ground', label: 'Ground Lamb' },
-        { id: 'lamb-rack', label: 'Rack' },
-        { id: 'lamb-shanks', label: 'Shanks' },
+        { id: 'lamb-chops', label: 'Chops', emoji: '\u{1F969}' },
+        { id: 'lamb-leg', label: 'Leg', emoji: '\u{1F356}' },
+        { id: 'lamb-shoulder', label: 'Shoulder', emoji: '\u{1F372}' },
+        { id: 'lamb-ground', label: 'Ground Lamb', emoji: '\u{1F354}' },
+        { id: 'lamb-rack', label: 'Rack', emoji: '\u{1F525}' },
+        { id: 'lamb-shanks', label: 'Shanks', emoji: '\u{1F356}' },
       ]
     },
     turkey: {
       emoji: '\u{1F983}',
       label: 'Turkey',
       cuts: [
-        { id: 'turkey-breast', label: 'Breast' },
-        { id: 'turkey-ground', label: 'Ground\nTurkey' },
-        { id: 'turkey-thighs', label: 'Thighs' },
-        { id: 'turkey-whole', label: 'Whole\nTurkey' },
+        { id: 'turkey-breast', label: 'Breast', emoji: '\u{1F953}' },
+        { id: 'turkey-ground', label: 'Ground\nTurkey', emoji: '\u{1F354}' },
+        { id: 'turkey-thighs', label: 'Thighs', emoji: '\u{1F357}' },
+        { id: 'turkey-whole', label: 'Whole\nTurkey', emoji: '\u{1F983}' },
       ]
     },
     plant: {
       emoji: '\u{1F331}',
       label: 'Plant-Based',
       cuts: [
-        { id: 'plant-tofu', label: 'Tofu' },
-        { id: 'plant-tempeh', label: 'Tempeh' },
-        { id: 'plant-beans', label: 'Beans' },
-        { id: 'plant-lentils', label: 'Lentils' },
-        { id: 'plant-chickpeas', label: 'Chickpeas' },
+        { id: 'plant-tofu', label: 'Tofu', emoji: '\u{1F9C8}' },
+        { id: 'plant-tempeh', label: 'Tempeh', emoji: '\u{1F33E}' },
+        { id: 'plant-beans', label: 'Beans', emoji: '\u{1FAD8}' },
+        { id: 'plant-lentils', label: 'Lentils', emoji: '\u{1F35B}' },
+        { id: 'plant-chickpeas', label: 'Chickpeas', emoji: '\u{1F95C}' },
       ]
     }
   },
@@ -162,7 +162,7 @@ const Recipe = {
       }
 
       card.innerHTML = `
-        <span class="card-emoji">${category.emoji}</span>
+        <span class="card-emoji">${cut.emoji || category.emoji}</span>
         <span class="card-label">${cut.label}</span>
       `;
       card.addEventListener('click', () => this.toggleCut(cut, categoryKey));
