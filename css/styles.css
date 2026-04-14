@@ -861,3 +861,92 @@ html, body {
   background: var(--border);
   border-radius: 2px;
 }
+
+/* Calendar Week View */
+.calendar-week {
+  padding-top: var(--space-sm);
+}
+
+.week-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.week-nav {
+  display: flex;
+  gap: var(--space-xs);
+  margin-left: auto;
+}
+
+.week-grid-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 140px);
+  overflow: hidden;
+}
+
+.week-day-headers {
+  display: grid;
+  grid-template-columns: 60px repeat(7, 1fr);
+  gap: 1px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.week-day-header {
+  padding: var(--space-sm);
+}
+
+.week-day-header.today {
+  color: var(--accent);
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: 60px repeat(7, 1fr);
+  grid-template-rows: repeat(24, 48px);
+  gap: 1px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+.week-time-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  padding-right: var(--space-sm);
+  padding-top: 2px;
+}
+
+.week-cell {
+  background: var(--bg-secondary);
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+}
+
+.week-cell:active {
+  background: var(--bg-tertiary);
+}
+
+.week-event {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  border-radius: 4px;
+  padding: 2px var(--space-xs);
+  font-size: 11px;
+  font-weight: 500;
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  z-index: 1;
+}

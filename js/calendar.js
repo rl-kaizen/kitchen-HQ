@@ -28,6 +28,15 @@ const Calendar = {
     this.eventDeleteBtn = document.getElementById('event-delete-btn');
     this.eventCancelBtn = document.getElementById('event-cancel-btn');
     this.eventSaveBtn = document.getElementById('event-save-btn');
+    this.weekView = document.getElementById('calendar-week');
+    this.weekTitle = document.getElementById('week-title');
+    this.weekDayHeaders = document.getElementById('week-day-headers');
+    this.weekGrid = document.getElementById('week-grid');
+    this.weekViewBtn = document.getElementById('week-view-btn');
+    this.weekBackBtn = document.getElementById('week-back');
+    this.weekPrevBtn = document.getElementById('week-prev');
+    this.weekNextBtn = document.getElementById('week-next');
+    this.currentWeekStart = null;
 
     // Set to current month
     const now = new Date();
@@ -47,6 +56,10 @@ const Calendar = {
     this.eventCancelBtn.addEventListener('click', () => this.closeModal());
     this.eventSaveBtn.addEventListener('click', () => this.saveEvent());
     this.eventDeleteBtn.addEventListener('click', () => this.deleteEvent());
+    this.weekViewBtn.addEventListener('click', () => this.showWeekView());
+    this.weekBackBtn.addEventListener('click', () => this.showMonthView());
+    this.weekPrevBtn.addEventListener('click', () => this.changeWeek(-1));
+    this.weekNextBtn.addEventListener('click', () => this.changeWeek(1));
 
     // Start sync if authenticated
     this.startSync();
@@ -151,6 +164,7 @@ const Calendar = {
 
   showMonthView() {
     this.dayView.hidden = true;
+    this.weekView.hidden = true;
     this.monthView.hidden = false;
   },
 
@@ -387,5 +401,123 @@ const Calendar = {
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12 || 12;
     return `${hours}:${mins} ${ampm}`;
+  },
+
+  // --- Week View ---
+  showWeekView(startDate) {
+    // Default to current week
+    if (!startDate) {
+      const today = new Date();
+      const day = today.getDay();
+      startDate = new Date(today);
+      startDate.setDate(today.getDate() - day); // Start on Sunday
+    }
+    this.currentWeekStart = startDate;
+    this.monthView.hidden = true;
+    this.dayView.hidden = true;
+    this.weekView.hidden = false;
+    this.renderWeek();
+  },
+
+  changeWeek(delta) {
+    const newStart = new Date(this.currentWeekStart);
+    newStart.setDate(newStart.getDate() + (delta * 7));
+    this.currentWeekStart = newStart;
+    this.renderWeek();
+  },
+
+  renderWeek() {
+    const start = this.currentWeekStart;
+    const end = new Date(start);
+    end.setDate(end.getDate() + 6);
+
+    const startMonth = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endMonth = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    this.weekTitle.textContent = `${startMonth} – ${endMonth}`;
+
+    const today = new Date();
+    const todayStr = this.toDateString(today);
+
+    // Day headers
+    this.weekDayHeaders.innerHTML = '<div></div>'; // Empty cell for time column
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(start);
+      date.setDate(date.getDate() + i);
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const isToday = this.toDateString(date) === todayStr;
+      this.weekDayHeaders.innerHTML += `
+        <div class="week-day-header ${isToday ? 'today' : ''}">${dayNames[i]}<br>${date.getDate()}</div>
+      `;
+    }
+
+    // Grid: time labels + cells
+    this.weekGrid.innerHTML = '';
+    for (let hour = 0; hour < 24; hour++) {
+      // Time label
+      const label = document.createElement('div');
+      label.className = 'week-time-label';
+      label.style.gridRow = `${hour + 1}`;
+      label.style.gridColumn = '1';
+      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      label.textContent = `${displayHour} ${ampm}`;
+      this.weekGrid.appendChild(label);
+
+      // Day cells
+      for (let day = 0; day < 7; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'week-cell';
+        cell.style.gridRow = `${hour + 1}`;
+        cell.style.gridColumn = `${day + 2}`;
+        const cellDate = new Date(start);
+        cellDate.setDate(cellDate.getDate() + day);
+        cell.addEventListener('click', () => {
+          this.selectedDay = cellDate;
+          this.eventStartInput.value = `${String(hour).padStart(2, '0')}:00`;
+          this.eventEndInput.value = `${String(hour + 1).padStart(2, '0')}:00`;
+          this.openNewEvent();
+        });
+        this.weekGrid.appendChild(cell);
+      }
+    }
+
+    // Overlay events
+    for (let day = 0; day < 7; day++) {
+      const date = new Date(start);
+      date.setDate(date.getDate() + day);
+      const dateStr = this.toDateString(date);
+      const dayEvents = this.events.filter(e => {
+        const eventDate = e.start.dateTime ? e.start.dateTime.slice(0, 10) : e.start.date;
+        return eventDate === dateStr;
+      });
+
+      for (const event of dayEvents) {
+        if (!event.start.dateTime) continue; // Skip all-day events in grid
+        const startHour = parseInt(event.start.dateTime.slice(11, 13));
+        const startMin = parseInt(event.start.dateTime.slice(14, 16));
+        const endHour = parseInt(event.end.dateTime.slice(11, 13));
+        const endMin = parseInt(event.end.dateTime.slice(14, 16));
+
+        const topOffset = (startMin / 60) * 48;
+        const duration = ((endHour - startHour) * 60 + (endMin - startMin)) / 60 * 48;
+
+        const el = document.createElement('div');
+        el.className = 'week-event';
+        el.style.gridColumn = `${day + 2}`;
+        el.style.gridRow = `${startHour + 1}`;
+        el.style.top = `${topOffset}px`;
+        el.style.height = `${Math.max(duration, 20)}px`;
+        el.style.backgroundColor = this.getEventColor(event);
+        el.textContent = event.summary || '(No title)';
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.openEditEvent(event);
+        });
+        this.weekGrid.appendChild(el);
+      }
+    }
+
+    // Scroll to 8 AM by default
+    this.weekGrid.scrollTop = 8 * 48;
   }
 };

@@ -80,6 +80,7 @@
             <button id="month-prev" class="nav-arrow" aria-label="Previous month">&lsaquo;</button>
             <h2 id="month-title" class="month-title"></h2>
             <button id="month-next" class="nav-arrow" aria-label="Next month">&rsaquo;</button>
+            <button id="week-view-btn" class="btn-secondary" style="margin-left: var(--space-lg);">Week</button>
           </div>
           <div class="day-headers">
             <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
@@ -95,6 +96,22 @@
             <button id="add-event-btn" class="btn-icon" aria-label="Add event">+</button>
           </div>
           <div id="day-events" class="day-events"></div>
+        </div>
+
+        <!-- Week View -->
+        <div id="calendar-week" class="calendar-week" hidden>
+          <div class="week-header">
+            <button id="week-back" class="nav-arrow" aria-label="Back to month">&lsaquo;</button>
+            <h2 id="week-title" class="month-title"></h2>
+            <div class="week-nav">
+              <button id="week-prev" class="nav-arrow" aria-label="Previous week">&lsaquo;</button>
+              <button id="week-next" class="nav-arrow" aria-label="Next week">&rsaquo;</button>
+            </div>
+          </div>
+          <div class="week-grid-container">
+            <div class="week-day-headers" id="week-day-headers"></div>
+            <div class="week-grid" id="week-grid"></div>
+          </div>
         </div>
 
         <!-- Event Editor Modal -->
