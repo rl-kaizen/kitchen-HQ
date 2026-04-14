@@ -120,14 +120,20 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
   async loadDriveFolders() {
     if (!GoogleAuth.isAuthenticated()) return;
     try {
-      // Fetch folders from Drive root that the user owns
-      const query = "mimeType = 'application/vnd.google-apps.folder' and 'root' in parents and trashed = false";
-      const url = `https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(query)}&fields=files(id,name)&orderBy=name&pageSize=100`;
-      const data = await GoogleAuth.fetchJSON(url);
+      // Fetch owned folders from root + shared folders
+      const ownQuery = "mimeType = 'application/vnd.google-apps.folder' and 'root' in parents and trashed = false";
+      const sharedQuery = "mimeType = 'application/vnd.google-apps.folder' and sharedWithMe = true and trashed = false";
+      const [ownData, sharedData] = await Promise.all([
+        GoogleAuth.fetchJSON(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(ownQuery)}&fields=files(id,name)&orderBy=name&pageSize=100`),
+        GoogleAuth.fetchJSON(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(sharedQuery)}&fields=files(id,name)&orderBy=name&pageSize=100`),
+      ]);
       const saved = localStorage.getItem('khq-photos-folder') || '';
+      const ownFolders = (ownData.files || []).map(f => ({ ...f, shared: false }));
+      const sharedFolders = (sharedData.files || []).map(f => ({ ...f, shared: true }));
+      const allFolders = [...ownFolders, ...sharedFolders];
       this.photosAlbumSelect.innerHTML = '<option value="">Select folder...</option>' +
-        (data.files || []).map(f =>
-          `<option value="${f.id}" ${f.id === saved ? 'selected' : ''}>${f.name}</option>`
+        allFolders.map(f =>
+          `<option value="${f.id}" ${f.id === saved ? 'selected' : ''}>${f.name}${f.shared ? ' (shared)' : ''}</option>`
         ).join('');
       this.photosAlbumSelect.disabled = false;
     } catch (err) {
