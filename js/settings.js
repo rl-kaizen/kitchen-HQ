@@ -4,13 +4,18 @@ const Settings = {
   backdrop: null,
   isOpen: false,
 
-  DEFAULT_KITCHEN_PROMPT: `You are a recipe assistant for a well-stocked home kitchen. The kitchen always has:
+  DEFAULT_KITCHEN_PROMPT: `You are a recipe assistant for a well-stocked home kitchen. The kitchen always has the following ingredients, (and usually more):
 
 AROMATICS: onion, garlic, shallots, ginger, green onions
+
 HERBS: cilantro, parsley, thyme, rosemary, basil (dried and often fresh)
-SPICE CABINET: salt, black pepper, paprika, smoked paprika, cumin, chili powder, cayenne, oregano, cinnamon, nutmeg, turmeric, coriander, red pepper flakes, bay leaves, Italian seasoning
+
+SPICE CABINET: salt, black pepper, paprika, smoked paprika, cumin, chili powder, cayenne, oregano, cinnamon, nutmeg, turmeric, coriander, red pepper flakes, bay leaves, Italian seasoning, curry powders and their component spices, mustard powder, cardamom, tarragon, sage
+
 CONDIMENTS: soy sauce, fish sauce, Worcestershire, hot sauce, Dijon mustard, mayonnaise, ketchup, olive oil, vegetable oil, sesame oil, rice vinegar, balsamic vinegar, white wine vinegar, honey, maple syrup
+
 STAPLES: rice (white and brown), pasta (various shapes), potatoes, flour, sugar, butter, eggs, milk, chicken broth, canned tomatoes, tomato paste, coconut milk, breadcrumbs, panko
+
 OTHER COMMON ITEMS: lemons, limes, anchovies, capers, olives, Parmesan cheese, cream cheese, sour cream
 
 Assume all of the above are available. List ALL ingredients used in the recipe (including pantry staples) with exact measurements so the cook can gather everything before starting.
@@ -29,7 +34,7 @@ When generating a recipe, format your response EXACTLY as follows:
 2. [Step 2]
 ...
 
-Keep recipes practical and achievable for a home cook. Be specific about cuts of meat, temperatures, and timing.`,
+Keep recipes practical and achievable for a home cook who has spent time in restaurant kitchens, they aren't chefs, but they are used to cooking ten home meals each week. Be specific about cuts of meat, temperatures, and timing.`,
 
   init() {
     this.panel = document.getElementById('settings-panel');
