@@ -1,70 +1,77 @@
 // Kitchen HQ — Recipe Generator
 const Recipe = {
+  // --- Icon CDN base ---
+  ICON_CDN: 'https://directus.backend.getwicked.app/assets',
+
   // --- Protein Data ---
   proteins: {
     chicken: {
       emoji: '\u{1F414}',
+      icon: '265acc8f-ec86-480c-b8af-5e627e469978/chicken-breast-raw.png',
       label: 'Chicken',
       cuts: [
-        { id: 'chicken-thighs-bone-in', label: 'Bone-in\nThighs', emoji: '\u{1F357}' },
-        { id: 'chicken-thighs-boneless', label: 'Boneless\nThighs', emoji: '\u{1F969}' },
-        { id: 'chicken-breasts', label: 'Breasts', emoji: '\u{1F953}' },
+        { id: 'chicken-thighs-bone-in', label: 'Bone-in\nThighs', emoji: '\u{1F357}', icon: 'e66107bf-a511-432e-b488-69be6816433b/chicken-thighs-bone-in.png' },
+        { id: 'chicken-thighs-boneless', label: 'Boneless\nThighs', emoji: '\u{1F969}', icon: '49f75874-a616-40cf-9077-95b9d23c1c63/chicken-thighs-boneless.png' },
+        { id: 'chicken-breasts', label: 'Breasts', emoji: '\u{1F953}', icon: '265acc8f-ec86-480c-b8af-5e627e469978/chicken-breast-raw.png' },
         { id: 'chicken-whole', label: 'Whole\nChicken', emoji: '\u{1F414}' },
-        { id: 'chicken-wings', label: 'Wings', emoji: '\u{1F357}' },
-        { id: 'chicken-drumsticks', label: 'Drumsticks', emoji: '\u{1F356}' },
+        { id: 'chicken-wings', label: 'Wings', emoji: '\u{1F357}', icon: 'a5296ebc-0347-43cc-a2a9-8c550c8b7d2f/chicken-wings-raw.png' },
+        { id: 'chicken-drumsticks', label: 'Drumsticks', emoji: '\u{1F356}', icon: '887e2063-73bd-4796-9e71-e51e133bb9bf/chicken-leg-raw.png' },
         { id: 'chicken-ground', label: 'Ground\nChicken', emoji: '\u{1F35D}' },
       ]
     },
     beef: {
       emoji: '\u{1F969}',
+      icon: 'fcc20146-993a-4fef-a17e-5c0f9bb1eabd/beef-sirloin-steak-raw.png',
       label: 'Beef',
       cuts: [
-        { id: 'beef-ribeye', label: 'Ribeye', emoji: '\u{1F969}' },
-        { id: 'beef-ny-strip', label: 'NY Strip', emoji: '\u{1F969}' },
-        { id: 'beef-filet', label: 'Filet', emoji: '\u{1F944}' },
-        { id: 'beef-flank', label: 'Flank', emoji: '\u{1FAD4}' },
-        { id: 'beef-stew-meat', label: 'Stew Meat', emoji: '\u{1F372}' },
-        { id: 'beef-ground', label: 'Ground Beef', emoji: '\u{1F354}' },
-        { id: 'beef-short-ribs', label: 'Short Ribs', emoji: '\u{1F356}' },
-        { id: 'beef-brisket', label: 'Brisket', emoji: '\u{1F525}' },
+        { id: 'beef-ribeye', label: 'Ribeye', emoji: '\u{1F969}', icon: 'fcc20146-993a-4fef-a17e-5c0f9bb1eabd/beef-sirloin-steak-raw.png' },
+        { id: 'beef-ny-strip', label: 'NY Strip', emoji: '\u{1F969}', icon: 'fcc20146-993a-4fef-a17e-5c0f9bb1eabd/beef-sirloin-steak-raw.png' },
+        { id: 'beef-filet', label: 'Filet', emoji: '\u{1F944}', icon: 'fcc20146-993a-4fef-a17e-5c0f9bb1eabd/beef-sirloin-steak-raw.png' },
+        { id: 'beef-flank', label: 'Flank', emoji: '\u{1FAD4}', icon: 'fcc20146-993a-4fef-a17e-5c0f9bb1eabd/beef-sirloin-steak-raw.png' },
+        { id: 'beef-stew-meat', label: 'Stew Meat', emoji: '\u{1F372}', icon: '928fa242-55f7-4244-b2db-0aa8eff2fb4a/beef-roast-raw.png' },
+        { id: 'beef-ground', label: 'Ground Beef', emoji: '\u{1F354}', icon: '2e0d4f87-7c43-442c-a4ca-707e153b84bf/ground-beef-raw.png' },
+        { id: 'beef-short-ribs', label: 'Short Ribs', emoji: '\u{1F356}', icon: '9571b491-957e-4370-8a4c-0c75b31f7272/beef-short-ribs-raw.png' },
+        { id: 'beef-brisket', label: 'Brisket', emoji: '\u{1F525}', icon: '68a37f47-237a-4175-9674-c19212bb75d3/beef-brisket-raw.png' },
       ]
     },
     pork: {
       emoji: '\u{1F416}',
       label: 'Pork',
       cuts: [
-        { id: 'pork-chops', label: 'Chops', emoji: '\u{1F969}' },
+        { id: 'pork-chops', label: 'Chops', emoji: '\u{1F969}', icon: 'e7ee6945-079f-444f-9838-78a6d0d3b018/ham-steak-raw.png' },
         { id: 'pork-tenderloin', label: 'Tenderloin', emoji: '\u{1F944}' },
-        { id: 'pork-shoulder', label: 'Shoulder', emoji: '\u{1F356}' },
-        { id: 'pork-ribs', label: 'Ribs', emoji: '\u{1F356}' },
-        { id: 'pork-ground', label: 'Ground Pork', emoji: '\u{1F354}' },
-        { id: 'pork-belly', label: 'Belly', emoji: '\u{1F953}' },
-        { id: 'pork-sausage', label: 'Sausage', emoji: '\u{1F32D}' },
+        { id: 'pork-shoulder', label: 'Shoulder', emoji: '\u{1F356}', icon: '363f0992-bbca-4e0e-a09f-5d20178284ab/ham-bone-in.png' },
+        { id: 'pork-ribs', label: 'Ribs', emoji: '\u{1F356}', icon: 'dff4e2e4-27b7-465d-8b66-9a05964fcfa4/beef-ribs-raw.png' },
+        { id: 'pork-ground', label: 'Ground Pork', emoji: '\u{1F354}', icon: '72c12d56-044f-4c44-8bd6-81be83fd568d/ground-sausage.png' },
+        { id: 'pork-belly', label: 'Belly', emoji: '\u{1F953}', icon: '887b5387-dcd1-48c6-8862-e99fe1dad48f/pancetta.png' },
+        { id: 'pork-sausage', label: 'Sausage', emoji: '\u{1F32D}', icon: 'c7222057-8973-4394-8d46-93304b65026b/kielbasa-sausage.png' },
       ]
     },
     seafood: {
       emoji: '\u{1F41F}',
+      icon: '4f11e547-9e8d-4af1-8fec-30c4cc19069a/coho-salmon-fillet-raw.png',
       label: 'Seafood',
       cuts: [
-        { id: 'seafood-salmon', label: 'Salmon', emoji: '\u{1F3A3}' },
+        { id: 'seafood-salmon', label: 'Salmon', emoji: '\u{1F3A3}', icon: '4f11e547-9e8d-4af1-8fec-30c4cc19069a/coho-salmon-fillet-raw.png' },
         { id: 'seafood-shrimp', label: 'Shrimp', emoji: '\u{1F990}' },
-        { id: 'seafood-tuna', label: 'Tuna', emoji: '\u{1F41F}' },
-        { id: 'seafood-cod', label: 'Cod', emoji: '\u{1F420}' },
-        { id: 'seafood-scallops', label: 'Scallops', emoji: '\u{1F41A}' },
-        { id: 'seafood-mussels', label: 'Mussels', emoji: '\u{1F9AA}' },
-        { id: 'seafood-crab', label: 'Crab', emoji: '\u{1F980}' },
+        { id: 'seafood-tuna', label: 'Tuna', emoji: '\u{1F41F}', icon: '941b05dc-addb-46c6-84e4-02aa687b4a61/halibut-steak-raw.png' },
+        { id: 'seafood-cod', label: 'Cod', emoji: '\u{1F420}', icon: '87c35615-4001-4a82-a6f9-006cfe6dc627/cod-fillet-raw.png' },
+        { id: 'seafood-scallops', label: 'Scallops', emoji: '\u{1F41A}', icon: '76bc76de-b5e8-4485-be00-d482d9dd160d/clams.png' },
+        { id: 'seafood-mussels', label: 'Mussels', emoji: '\u{1F9AA}', icon: '9b81e8de-9d88-465d-88eb-d8bf80986dc3/blue-mussels.png' },
+        { id: 'seafood-crab', label: 'Crab', emoji: '\u{1F980}', icon: '913e33f7-ba8a-4087-8b14-240f531427e1/lobster-tail-raw.png' },
       ]
     },
     lamb: {
       emoji: '\u{1F411}',
+      icon: 'ec054192-7996-4bfc-9c5d-e173afee6700/lamb-chops-raw.png',
       label: 'Lamb',
       cuts: [
-        { id: 'lamb-chops', label: 'Chops', emoji: '\u{1F969}' },
-        { id: 'lamb-leg', label: 'Leg', emoji: '\u{1F356}' },
-        { id: 'lamb-shoulder', label: 'Shoulder', emoji: '\u{1F372}' },
-        { id: 'lamb-ground', label: 'Ground Lamb', emoji: '\u{1F354}' },
-        { id: 'lamb-rack', label: 'Rack', emoji: '\u{1F525}' },
-        { id: 'lamb-shanks', label: 'Shanks', emoji: '\u{1F356}' },
+        { id: 'lamb-chops', label: 'Chops', emoji: '\u{1F969}', icon: 'ec054192-7996-4bfc-9c5d-e173afee6700/lamb-chops-raw.png' },
+        { id: 'lamb-leg', label: 'Leg', emoji: '\u{1F356}', icon: '6c9087c3-65b7-4bbd-a6e9-ec77e12f2b61/lamb-leg-boneless-raw.png' },
+        { id: 'lamb-shoulder', label: 'Shoulder', emoji: '\u{1F372}', icon: '724c59f9-c4ae-484d-84d8-28ef1205077b/lamb-shoulder-raw.png' },
+        { id: 'lamb-ground', label: 'Ground Lamb', emoji: '\u{1F354}', icon: '1eaa9abd-51dd-4fb8-ab8b-91ff70954992/ground-lamb-raw.png' },
+        { id: 'lamb-rack', label: 'Rack', emoji: '\u{1F525}', icon: 'ec054192-7996-4bfc-9c5d-e173afee6700/lamb-chops-raw.png' },
+        { id: 'lamb-shanks', label: 'Shanks', emoji: '\u{1F356}', icon: '83be0299-4258-437e-8d4d-f9ca60bcc235/lamb-shank-raw.png' },
       ]
     },
     turkey: {
@@ -83,9 +90,9 @@ const Recipe = {
       cuts: [
         { id: 'plant-tofu', label: 'Tofu', emoji: '\u{1F9C8}' },
         { id: 'plant-tempeh', label: 'Tempeh', emoji: '\u{1F33E}' },
-        { id: 'plant-beans', label: 'Beans', emoji: '\u{1FAD8}' },
-        { id: 'plant-lentils', label: 'Lentils', emoji: '\u{1F35B}' },
-        { id: 'plant-chickpeas', label: 'Chickpeas', emoji: '\u{1F95C}' },
+        { id: 'plant-beans', label: 'Beans', emoji: '\u{1FAD8}', icon: 'b5bb80fb-ee4d-439d-8350-b00bc0d04405/black-beans-canned.png' },
+        { id: 'plant-lentils', label: 'Lentils', emoji: '\u{1F35B}', icon: '7aad7c02-a94d-4d83-af42-72321586411f/brown-lentils.png' },
+        { id: 'plant-chickpeas', label: 'Chickpeas', emoji: '\u{1F95C}', icon: '96fc4f7b-30bb-4e5e-819b-5e4191c42638/chickpeas.png' },
       ]
     }
   },
@@ -125,10 +132,17 @@ const Recipe = {
       const card = document.createElement('div');
       card.className = 'protein-card';
       card.dataset.category = key;
-      card.innerHTML = `
-        <span class="card-emoji">${cat.emoji}</span>
-        <span class="card-label">${cat.label}</span>
-      `;
+      if (cat.icon) {
+        card.innerHTML = `
+          <img class="card-icon" src="${this.ICON_CDN}/${cat.icon}" alt="${cat.label}" loading="lazy">
+          <span class="card-label">${cat.label}</span>
+        `;
+      } else {
+        card.innerHTML = `
+          <span class="card-emoji">${cat.emoji}</span>
+          <span class="card-label">${cat.label}</span>
+        `;
+      }
       card.addEventListener('click', () => this.selectCategory(key));
       this.categoriesEl.appendChild(card);
     }
@@ -161,10 +175,18 @@ const Recipe = {
         card.classList.add('selected');
       }
 
-      card.innerHTML = `
-        <span class="card-emoji">${cut.emoji || category.emoji}</span>
-        <span class="card-label">${cut.label}</span>
-      `;
+      const iconPath = cut.icon || category.icon;
+      if (iconPath) {
+        card.innerHTML = `
+          <img class="card-icon" src="${this.ICON_CDN}/${iconPath}" alt="${cut.label}" loading="lazy">
+          <span class="card-label">${cut.label}</span>
+        `;
+      } else {
+        card.innerHTML = `
+          <span class="card-emoji">${cut.emoji || category.emoji}</span>
+          <span class="card-label">${cut.label}</span>
+        `;
+      }
       card.addEventListener('click', () => this.toggleCut(cut, categoryKey));
       this.cutsEl.appendChild(card);
     }
