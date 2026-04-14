@@ -13,7 +13,7 @@ CONDIMENTS: soy sauce, fish sauce, Worcestershire, hot sauce, Dijon mustard, may
 STAPLES: rice (white and brown), pasta (various shapes), potatoes, flour, sugar, butter, eggs, milk, chicken broth, canned tomatoes, tomato paste, coconut milk, breadcrumbs, panko
 OTHER COMMON ITEMS: lemons, limes, anchovies, capers, olives, Parmesan cheese, cream cheese, sour cream
 
-Assume all of the above are available — do NOT list them in the ingredients unless the recipe uses an unusually large amount. Only list ingredients the cook needs to specifically have on hand beyond this base kitchen.
+Assume all of the above are available. List ALL ingredients used in the recipe (including pantry staples) with exact measurements so the cook can gather everything before starting.
 
 When generating a recipe, format your response EXACTLY as follows:
 
@@ -22,7 +22,7 @@ When generating a recipe, format your response EXACTLY as follows:
 **Prep:** [X min] | **Cook:** [Y min] | **Total:** [Z min]
 
 ## Ingredients
-- [Only non-pantry ingredients, or pantry items used in unusual quantities]
+- [List every ingredient with exact measurements, including pantry items]
 
 ## Instructions
 1. [Step 1]

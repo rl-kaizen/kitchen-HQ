@@ -412,17 +412,14 @@ const Recipe = {
     body = body.replace(/^##\s+(.+)$/gm, '<h3>$1</h3>');
     // Convert bold
     body = body.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    // Convert unordered lists
-    body = body.replace(/^-\s+(.+)$/gm, '<li>$1</li>');
-    body = body.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-    // Convert ordered lists
-    body = body.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
-    // Wrap consecutive <li> not in <ul> into <ol>
-    body = body.replace(/(?<!<\/ul>\n?)(<li>.*<\/li>\n?)+/g, (match) => {
-      if (body.indexOf(match) > body.indexOf('<ul>')) {
-        return `<ol>${match}</ol>`;
-      }
-      return match;
+    // Convert lists block by block: consecutive - lines become <ul>, consecutive N. lines become <ol>
+    body = body.replace(/(^[\t ]*-\s+.+$(\n|$))+/gm, (match) => {
+      const items = match.trim().split('\n').map(line => `<li>${line.replace(/^[\t ]*-\s+/, '')}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    });
+    body = body.replace(/(^\d+\.\s+.+$(\n|$))+/gm, (match) => {
+      const items = match.trim().split('\n').map(line => `<li>${line.replace(/^\d+\.\s+/, '')}</li>`).join('');
+      return `<ol>${items}</ol>`;
     });
     // Convert line breaks
     body = body.replace(/\n\n/g, '<br>');
