@@ -102,15 +102,13 @@ const GoogleAuth = {
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log('[GoogleAuth] fetchJSON response:', res.status, url);
-    if (res.status === 401 || res.status === 403) {
-      // Token rejected or insufficient scopes — clear stored token
-      // Do NOT try to re-authenticate here (popup would be blocked
-      // since this is not a user-initiated gesture)
+    if (res.status === 401) {
+      // Token expired or revoked — clear it
       this.accessToken = null;
       this.tokenExpiry = null;
       localStorage.removeItem('khq-google-token');
       localStorage.removeItem('khq-google-token-expiry');
-      throw new Error(`Google API error ${res.status}: Token invalid or insufficient scopes. Please reconnect your Google account in Settings.`);
+      throw new Error('Google session expired. Please reconnect your Google account in Settings.');
     }
     if (!res.ok) {
       throw new Error(`Google API error ${res.status}: ${res.statusText}`);
@@ -128,12 +126,12 @@ const GoogleAuth = {
       },
       body: JSON.stringify(body),
     });
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 401) {
       this.accessToken = null;
       this.tokenExpiry = null;
       localStorage.removeItem('khq-google-token');
       localStorage.removeItem('khq-google-token-expiry');
-      throw new Error(`Google API error ${res.status}: Token invalid or insufficient scopes. Please reconnect your Google account in Settings.`);
+      throw new Error('Google session expired. Please reconnect your Google account in Settings.');
     }
     if (!res.ok) {
       throw new Error(`Google API error ${res.status}: ${res.statusText}`);
@@ -151,12 +149,12 @@ const GoogleAuth = {
       },
       body: JSON.stringify(body),
     });
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 401) {
       this.accessToken = null;
       this.tokenExpiry = null;
       localStorage.removeItem('khq-google-token');
       localStorage.removeItem('khq-google-token-expiry');
-      throw new Error(`Google API error ${res.status}: Token invalid or insufficient scopes. Please reconnect your Google account in Settings.`);
+      throw new Error('Google session expired. Please reconnect your Google account in Settings.');
     }
     if (!res.ok) {
       throw new Error(`Google API error ${res.status}: ${res.statusText}`);
@@ -170,12 +168,12 @@ const GoogleAuth = {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
     });
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 401) {
       this.accessToken = null;
       this.tokenExpiry = null;
       localStorage.removeItem('khq-google-token');
       localStorage.removeItem('khq-google-token-expiry');
-      throw new Error(`Google API error ${res.status}: Token invalid or insufficient scopes. Please reconnect your Google account in Settings.`);
+      throw new Error('Google session expired. Please reconnect your Google account in Settings.');
     }
     if (!res.ok && res.status !== 204) {
       throw new Error(`Google API error ${res.status}: ${res.statusText}`);
