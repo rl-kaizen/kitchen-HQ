@@ -35,6 +35,27 @@ const App = {
     Screensaver.init();
 
     this.settingsBtn.addEventListener('click', () => Settings.open());
+
+    // Auth banner reconnect
+    document.getElementById('auth-banner-reconnect').addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        await GoogleAuth.authenticate();
+        App.hideAuthBanner();
+        Settings.updateGoogleAuthUI();
+        Calendar.fetchEvents();
+      } catch (err) {
+        console.error('Reconnect failed:', err);
+      }
+    });
+  },
+
+  showAuthBanner() {
+    document.getElementById('auth-banner').hidden = false;
+  },
+
+  hideAuthBanner() {
+    document.getElementById('auth-banner').hidden = true;
   },
 
   // --- Swipe Navigation ---

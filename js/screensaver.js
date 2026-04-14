@@ -58,6 +58,9 @@ const Screensaver = {
       this.photoB.classList.remove('visible', 'ken-burns');
       this.photoA.style.backgroundImage = '';
       this.photoB.style.backgroundImage = '';
+      // Revoke blob URLs to free memory
+      if (this.photoA._blobUrl) { URL.revokeObjectURL(this.photoA._blobUrl); this.photoA._blobUrl = null; }
+      if (this.photoB._blobUrl) { URL.revokeObjectURL(this.photoB._blobUrl); this.photoB._blobUrl = null; }
     }, 1500);
 
     clearInterval(this.cycleTimer);
@@ -72,8 +75,14 @@ const Screensaver = {
     const otherSlot = this.activeSlot === 'a' ? this.photoB : this.photoA;
 
     try {
+      // Check token is still valid before fetching
+      if (!GoogleAuth.isAuthenticated()) {
+        this.deactivate();
+        App.showAuthBanner();
+        return;
+      }
       // Fetch image via Drive API with auth token (PWA standalone mode has no cookies)
-      const token = GoogleAuth.accessToken;
+      const token = await GoogleAuth.getToken();
       const res = await fetch(
         `https://www.googleapis.com/drive/v3/files/${photo.id}?alt=media`,
         { headers: { Authorization: `Bearer ${token}` } }

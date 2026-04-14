@@ -1,4 +1,12 @@
 // Kitchen HQ — Recipe Generator
+
+// HTML escape helper to prevent XSS
+function escapeHTML(str) {
+  const el = document.createElement('span');
+  el.textContent = str;
+  return el.innerHTML;
+}
+
 const Recipe = {
   // --- Icon CDN base ---
   ICON_CDN: 'https://directus.backend.getwicked.app/assets',
@@ -393,6 +401,8 @@ const Recipe = {
 
     // Convert remaining markdown to HTML (simple conversion)
     let body = markdown;
+    // Strip any raw HTML tags to prevent XSS from API responses
+    body = body.replace(/<[^>]*>/g, '');
     // Remove the title line
     body = body.replace(/^#\s+.+$/m, '');
     // Remove the meta line
@@ -475,8 +485,8 @@ const Recipe = {
 
     this.historyList.innerHTML = recipes.map(r => `
       <div class="history-item" data-recipe-id="${r.id}">
-        <div class="history-item-title">${r.title}</div>
-        <div class="history-item-meta">${r.proteins.join(', ')} — ${new Date(r.timestamp).toLocaleDateString()}</div>
+        <div class="history-item-title">${escapeHTML(r.title)}</div>
+        <div class="history-item-meta">${escapeHTML((r.proteins || []).join(', '))} — ${new Date(r.timestamp).toLocaleDateString()}</div>
       </div>
     `).join('');
 

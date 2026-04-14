@@ -1,4 +1,11 @@
 // Kitchen HQ — Google Calendar
+
+function escapeHTML(str) {
+  const el = document.createElement('span');
+  el.textContent = str;
+  return el.innerHTML;
+}
+
 const Calendar = {
   currentMonth: null, // Date object set to 1st of displayed month
   events: [],         // Cached events for current range
@@ -118,12 +125,17 @@ const Calendar = {
     return cell;
   },
 
+  getEventsForDate(dateStr) {
+    return this.events.filter(e => {
+      const startDate = e.start.dateTime ? e.start.dateTime.slice(0, 10) : e.start.date;
+      const endDate = e.end.dateTime ? e.end.dateTime.slice(0, 10) : e.end.date;
+      return dateStr >= startDate && dateStr < endDate;
+    });
+  },
+
   addEventDots(cell, date) {
     const dateStr = this.toDateString(date);
-    const dayEvents = this.events.filter(e => {
-      const eventDate = e.start.dateTime ? e.start.dateTime.slice(0, 10) : e.start.date;
-      return eventDate === dateStr;
-    });
+    const dayEvents = this.getEventsForDate(dateStr);
 
     if (dayEvents.length === 0) return;
 
@@ -170,11 +182,7 @@ const Calendar = {
 
   renderDayEvents(date) {
     const dateStr = this.toDateString(date);
-    const dayEvents = this.events
-      .filter(e => {
-        const eventDate = e.start.dateTime ? e.start.dateTime.slice(0, 10) : e.start.date;
-        return eventDate === dateStr;
-      })
+    const dayEvents = this.getEventsForDate(dateStr)
       .sort((a, b) => {
         const aTime = a.start.dateTime || a.start.date;
         const bTime = b.start.dateTime || b.start.date;
@@ -193,7 +201,7 @@ const Calendar = {
         : 'All day';
       return `
         <div class="event-card" data-event-id="${event.id}" style="border-left-color: ${color}">
-          <div class="event-card-title">${event.summary || '(No title)'}</div>
+          <div class="event-card-title">${escapeHTML(event.summary || '(No title)')}</div>
           <div class="event-card-time">${time}</div>
         </div>
       `;
@@ -353,6 +361,9 @@ const Calendar = {
       }
     } catch (err) {
       console.error('Failed to fetch events:', err);
+      if (!GoogleAuth.isAuthenticated()) {
+        App.showAuthBanner();
+      }
     }
   },
 
@@ -474,7 +485,8 @@ const Calendar = {
         cell.addEventListener('click', () => {
           this.selectedDay = cellDate;
           this.eventStartInput.value = `${String(hour).padStart(2, '0')}:00`;
-          this.eventEndInput.value = `${String(hour + 1).padStart(2, '0')}:00`;
+          const endHour = hour < 23 ? hour + 1 : 23;
+          this.eventEndInput.value = `${String(endHour).padStart(2, '0')}:${hour < 23 ? '00' : '59'}`;
           this.openNewEvent();
         });
         this.weekGrid.appendChild(cell);
@@ -486,10 +498,7 @@ const Calendar = {
       const date = new Date(start);
       date.setDate(date.getDate() + day);
       const dateStr = this.toDateString(date);
-      const dayEvents = this.events.filter(e => {
-        const eventDate = e.start.dateTime ? e.start.dateTime.slice(0, 10) : e.start.date;
-        return eventDate === dateStr;
-      });
+      const dayEvents = this.getEventsForDate(dateStr);
 
       for (const event of dayEvents) {
         if (!event.start.dateTime) continue; // Skip all-day events in grid

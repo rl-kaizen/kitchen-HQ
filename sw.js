@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kitchen-hq-v9';
+const CACHE_NAME = 'kitchen-hq-v10';
 const BASE_PATH = '/kitchen-HQ';
 const STATIC_ASSETS = [
   `${BASE_PATH}/`,
@@ -13,7 +13,8 @@ const STATIC_ASSETS = [
   `${BASE_PATH}/js/screensaver.js`,
   `${BASE_PATH}/js/google-auth.js`,
   `${BASE_PATH}/assets/icons/icon-192.png`,
-  `${BASE_PATH}/assets/icons/icon-512.png`
+  `${BASE_PATH}/assets/icons/icon-512.png`,
+  `${BASE_PATH}/favicon.svg`
 ];
 
 // Install: cache static assets
@@ -41,7 +42,7 @@ self.addEventListener('fetch', (event) => {
   // Don't cache API calls or Google auth
   if (url.hostname === 'api.anthropic.com' ||
       url.hostname === 'www.googleapis.com' ||
-      url.hostname === 'photoslibrary.googleapis.com' ||
+      url.hostname === 'drive.google.com' ||
       url.hostname === 'accounts.google.com') {
     return;
   }

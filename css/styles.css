@@ -72,6 +72,25 @@ html, body {
   pointer-events: none;
 }
 
+.auth-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--danger);
+  color: white;
+  text-align: center;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 14px;
+  z-index: 200;
+}
+
+.auth-banner a {
+  color: white;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .settings-btn {
   position: fixed;
   top: var(--space-md);
