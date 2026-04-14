@@ -67,13 +67,31 @@ const Screensaver = {
     App.resetIdleTimer();
   },
 
-  showPhoto(photo) {
+  async showPhoto(photo) {
     const slot = this.activeSlot === 'a' ? this.photoA : this.photoB;
     const otherSlot = this.activeSlot === 'a' ? this.photoB : this.photoA;
 
-    // Google Drive thumbnail URL — use large size for high-res display
-    const url = `https://drive.google.com/thumbnail?id=${photo.id}&sz=w2048`;
-    slot.style.backgroundImage = `url(${url})`;
+    try {
+      // Fetch image via Drive API with auth token (PWA standalone mode has no cookies)
+      const token = GoogleAuth.accessToken;
+      const res = await fetch(
+        `https://www.googleapis.com/drive/v3/files/${photo.id}?alt=media`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (!res.ok) throw new Error(`Drive fetch ${res.status}`);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Revoke previous blob URL to avoid memory leaks
+      const prev = slot._blobUrl;
+      if (prev) URL.revokeObjectURL(prev);
+      slot._blobUrl = blobUrl;
+
+      slot.style.backgroundImage = `url(${blobUrl})`;
+    } catch (err) {
+      console.error('Failed to load photo:', err);
+      return;
+    }
 
     // Ken Burns: randomize direction
     slot.style.transformOrigin = this.randomOrigin();
