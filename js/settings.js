@@ -88,6 +88,7 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
         try {
           await GoogleAuth.authenticate();
           this.updateGoogleAuthUI();
+          Calendar.fetchEvents();
         } catch (err) {
           this.googleAuthStatus.textContent = `Error: ${err.message}`;
           this.googleAuthStatus.style.color = 'var(--color-danger, #e55)';
