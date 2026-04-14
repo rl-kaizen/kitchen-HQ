@@ -412,17 +412,37 @@ const Recipe = {
     body = body.replace(/^##\s+(.+)$/gm, '<h3>$1</h3>');
     // Convert bold
     body = body.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    // Convert lists block by block: consecutive - lines become <ul>, consecutive N. lines become <ol>
-    body = body.replace(/(^[\t ]*-\s+.+$(\n|$))+/gm, (match) => {
-      const items = match.trim().split('\n').map(line => `<li>${line.replace(/^[\t ]*-\s+/, '')}</li>`).join('');
-      return `<ul>${items}</ul>`;
-    });
-    body = body.replace(/(^\d+\.\s+.+$(\n|$))+/gm, (match) => {
-      const items = match.trim().split('\n').map(line => `<li>${line.replace(/^\d+\.\s+/, '')}</li>`).join('');
-      return `<ol>${items}</ol>`;
-    });
-    // Convert line breaks
-    body = body.replace(/\n\n/g, '<br>');
+    // Convert markdown to HTML line by line for reliable list handling
+    const lines = body.split('\n');
+    let html = '';
+    let inUl = false;
+    let inOl = false;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      const ulMatch = trimmed.match(/^-\s+(.+)/);
+      const olMatch = trimmed.match(/^\d+\.\s+(.+)/);
+
+      if (ulMatch) {
+        if (!inUl) { if (inOl) { html += '</ol>'; inOl = false; } html += '<ul>'; inUl = true; }
+        html += `<li>${ulMatch[1]}</li>`;
+      } else if (olMatch) {
+        if (!inOl) { if (inUl) { html += '</ul>'; inUl = false; } html += '<ol>'; inOl = true; }
+        html += `<li>${olMatch[1]}</li>`;
+      } else {
+        if (inUl) { html += '</ul>'; inUl = false; }
+        if (inOl) { html += '</ol>'; inOl = false; }
+        if (trimmed === '') {
+          html += ' ';
+        } else {
+          html += `<p>${trimmed}</p>`;
+        }
+      }
+    }
+    if (inUl) html += '</ul>';
+    if (inOl) html += '</ol>';
+
+    body = html;
 
     this.recipeBodyEl.innerHTML = body.trim();
 
