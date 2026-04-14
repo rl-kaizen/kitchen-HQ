@@ -399,6 +399,9 @@ const Recipe = {
       this.recipeMetaEl.textContent = proteinList;
     }
 
+    // Debug: log raw markdown to diagnose list rendering
+    console.log('[Recipe] Raw markdown from Claude:', JSON.stringify(markdown));
+
     // Convert remaining markdown to HTML (simple conversion)
     let body = markdown;
     // Strip any raw HTML tags to prevent XSS from API responses
