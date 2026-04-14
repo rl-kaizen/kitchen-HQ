@@ -113,6 +113,7 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
       this.googleAuthStatus.textContent = 'Not connected';
       this.googleAuthStatus.style.color = 'var(--color-muted, #999)';
       this.photosAlbumSelect.disabled = true;
+      this.photosAlbumSelect.innerHTML = '<option value="">Connect Google first</option>';
     }
   },
 
@@ -128,6 +129,10 @@ Keep recipes practical and achievable for a home cook. Be specific about cuts of
       this.photosAlbumSelect.disabled = false;
     } catch (err) {
       console.error('Failed to load albums:', err);
+      // If we got a scope/auth error, the token was cleared — update UI
+      if (!GoogleAuth.isAuthenticated()) {
+        this.updateGoogleAuthUI();
+      }
     }
   },
 

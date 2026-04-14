@@ -48,6 +48,17 @@ const GoogleAuth = {
             reject(new Error(response.error));
             return;
           }
+
+          // Validate that all requested scopes were granted
+          const granted = (response.scope || '').split(' ');
+          const required = this.SCOPES.split(' ');
+          const missing = required.filter(s => !granted.includes(s));
+          if (missing.length > 0) {
+            console.warn('[GoogleAuth] Missing scopes:', missing);
+            reject(new Error(`Google did not grant all required permissions. Missing: ${missing.join(', ')}. Please reconnect and grant all permissions.`));
+            return;
+          }
+
           this.accessToken = response.access_token;
           console.log('[GoogleAuth] Token received, length:', this.accessToken?.length);
           console.log('[GoogleAuth] Scopes granted:', response.scope);
@@ -60,7 +71,7 @@ const GoogleAuth = {
         },
       });
 
-      this.tokenClient.requestAccessToken({ prompt: 'consent' });
+      this.tokenClient.requestAccessToken({ prompt: '' });
     });
   },
 
@@ -68,7 +79,9 @@ const GoogleAuth = {
     if (this.isAuthenticated()) {
       return this.accessToken;
     }
-    return this.authenticate();
+    // Don't auto-authenticate — callers should check isAuthenticated()
+    // first, and only user-gesture handlers should call authenticate()
+    throw new Error('Not authenticated. Please connect your Google account in Settings.');
   },
 
   disconnect() {
@@ -89,16 +102,15 @@ const GoogleAuth = {
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log('[GoogleAuth] fetchJSON response:', res.status, url);
-    if (res.status === 401) {
-      // Token rejected — re-authenticate and retry once
+    if (res.status === 401 || res.status === 403) {
+      // Token rejected or insufficient scopes — clear stored token
+      // Do NOT try to re-authenticate here (popup would be blocked
+      // since this is not a user-initiated gesture)
       this.accessToken = null;
       this.tokenExpiry = null;
       localStorage.removeItem('khq-google-token');
       localStorage.removeItem('khq-google-token-expiry');
-      const newToken = await this.authenticate();
-      res = await fetch(url, {
-        headers: { Authorization: `Bearer ${newToken}` },
-      });
+      throw new Error(`Google API error ${res.status}: Token invalid or insufficient scopes. Please reconnect your Google account in Settings.`);
     }
     if (!res.ok) {
       throw new Error(`Google API error ${res.status}: ${res.statusText}`);
@@ -116,20 +128,12 @@ const GoogleAuth = {
       },
       body: JSON.stringify(body),
     });
-    if (res.status === 401) {
+    if (res.status === 401 || res.status === 403) {
       this.accessToken = null;
       this.tokenExpiry = null;
       localStorage.removeItem('khq-google-token');
       localStorage.removeItem('khq-google-token-expiry');
-      const newToken = await this.authenticate();
-      res = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${newToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
+      throw new Error(`Google API error ${res.status}: Token invalid or insufficient scopes. Please reconnect your Google account in Settings.`);
     }
     if (!res.ok) {
       throw new Error(`Google API error ${res.status}: ${res.statusText}`);
@@ -147,20 +151,12 @@ const GoogleAuth = {
       },
       body: JSON.stringify(body),
     });
-    if (res.status === 401) {
+    if (res.status === 401 || res.status === 403) {
       this.accessToken = null;
       this.tokenExpiry = null;
       localStorage.removeItem('khq-google-token');
       localStorage.removeItem('khq-google-token-expiry');
-      const newToken = await this.authenticate();
-      res = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${newToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
+      throw new Error(`Google API error ${res.status}: Token invalid or insufficient scopes. Please reconnect your Google account in Settings.`);
     }
     if (!res.ok) {
       throw new Error(`Google API error ${res.status}: ${res.statusText}`);
@@ -174,16 +170,12 @@ const GoogleAuth = {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
     });
-    if (res.status === 401) {
+    if (res.status === 401 || res.status === 403) {
       this.accessToken = null;
       this.tokenExpiry = null;
       localStorage.removeItem('khq-google-token');
       localStorage.removeItem('khq-google-token-expiry');
-      const newToken = await this.authenticate();
-      res = await fetch(url, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${newToken}` },
-      });
+      throw new Error(`Google API error ${res.status}: Token invalid or insufficient scopes. Please reconnect your Google account in Settings.`);
     }
     if (!res.ok && res.status !== 204) {
       throw new Error(`Google API error ${res.status}: ${res.statusText}`);
