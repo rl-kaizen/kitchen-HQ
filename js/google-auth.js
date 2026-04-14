@@ -43,11 +43,14 @@ const GoogleAuth = {
         client_id: clientId,
         scope: this.SCOPES,
         callback: (response) => {
+          console.log('[GoogleAuth] Token response:', JSON.stringify(response));
           if (response.error) {
             reject(new Error(response.error));
             return;
           }
           this.accessToken = response.access_token;
+          console.log('[GoogleAuth] Token received, length:', this.accessToken?.length);
+          console.log('[GoogleAuth] Scopes granted:', response.scope);
           // expires_in is in seconds; default to 3600 if not provided
           const expiresIn = (response.expires_in || 3600) * 1000;
           this.tokenExpiry = Date.now() + expiresIn;
@@ -81,9 +84,11 @@ const GoogleAuth = {
 
   async fetchJSON(url) {
     const token = await this.getToken();
+    console.log('[GoogleAuth] fetchJSON token:', token ? `${token.slice(0, 10)}...` : 'NULL');
     let res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log('[GoogleAuth] fetchJSON response:', res.status, url);
     if (res.status === 401) {
       // Token rejected — re-authenticate and retry once
       this.accessToken = null;
