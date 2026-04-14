@@ -71,7 +71,7 @@ const GoogleAuth = {
         },
       });
 
-      this.tokenClient.requestAccessToken({ prompt: '' });
+      this.tokenClient.requestAccessToken({ prompt: 'consent' });
     });
   },
 
